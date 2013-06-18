@@ -1,0 +1,268 @@
+\chapter{Commodities \& Energy Markets 1 - Coulon}
+What are commodities? Commodities are goods (either natural resources or processed) with little or no variation in quality across supply sources.
+
+They are widely traded.
+
+Recent changes:
+\begin{enumerate}
+	\item gas/electricity deregulated
+	\item number of market participants has rapidly expanded
+	\item banks actively trade derivative products
+	\item investment volume
+\end{enumerate}
+
+Main participants in price models: Traditionally:
+\begin{enumerate}
+	\item Producers (farmers, mines, power plants, refineries)
+	\item Consumers (large industrials, utilities, airlines)
+	\item Storage/Delivery (gas pipelines, logistics companies)
+\end{enumerate}
+Recently:
+\begin{enumerate}
+	\item Financial institutions, speculators, investors, regulators
+	\item everyone else (if you read the news, drive a car, eat food, etc)
+\end{enumerate}
+
+What are the main modeling challenges:
+\begin{enumerate}
+	\item Adapt financial math to very different markets
+	\item Capturing features of price dynamics and fundamentals(inventory levels, weather )
+	\item Strike balance between supply/demand, calibration, pricing derivatives, etc.
+\end{enumerate}
+
+Differences:
+\begin{enumerate}
+	\item Exhibit mean reversion, possibly seasonal, very high volatility
+	\item Dynamics closely linked to economic factors
+	\item ``Spot'' commodities are not traded assets in the same sense as stocks or options (due to storage/delivery issues) (mainly, can't assume no arbitrage)
+	\item Critically: Same commodity delivered at two slightly different location or times can behave as separate assets.
+	\item Set of liquidly traded products often significantly smaller than the risks needed to be hedged( specialness ) 
+	\item Correlations are very important: companies interested in hedging multi-commodity exposure.
+\end{enumerate}
+
+Spot power prices: craziest of all.
+
+Spot price history: more regular.
+
+Categories of commodities:
+\begin{enumerate}
+	\item Storable vs non-storable
+	\item continuous vs seasonal production (or demand)
+	\item local vs regional vs global
+	\item elasticity of supply or demand to price
+\end{enumerate}
+
+Modeling categories:
+\begin{enumerate}
+	\item Reduced-form: direct price modeling, traditional financial math
+	\item econometic: reduced form elements combined with regressions to find relationship between price and key factors
+	\item structural: capture key features of supply and demand and approximate market mechanisms while retaining tractability
+	\item full equilibrium: detailed matching of supply and demand, optimization over participants behavior, physical constraints, etc.
+\end{enumerate}
+
+Forward curve behavior(Samuelson effect): Forward contracts become more volatile as they become closer to expiration.
+
+Cost of carry relationship:
+For a financial asset with no storage cost and interest rates r constant, by a simple no-arbitrage argument:
+\begin{equation}
+	F(t,T) = S_t e^{r(T-t)}
+\end{equation}
+But since storing commodities is expensive:
+\begin{equation}
+	F(t,T) = S_t e^{(r+c)(T-t)}
+\end{equation}
+However, since arbitrage argument only holds in one direction, so instead
+\begin{equation}
+	F(t,T) \leq S_t e^{(r+c)(T-t)}
+\end{equation}
+Why? We cannot actually short physical quantities. (You can't borrow from future harvests, for example.)
+
+\subsection{Theory of storage}
+Introduce
+\begin{equation}
+	F(t,T) = S_t e^{(r+c-\delta)(T-t)}
+\end{equation}
+where $\delta$ is the convenience yield. Very artificial, but still some intuitions. Basically, we get some dividend from being the holder of the asset. Frequently roll the costs into the convenience yield.
+
+\subsection{Reduced-Form Model}
+Simplest spot price model consistent with ``cost-of-carry:''
+\begin{equation}
+	F = S e^{r-\delta}(T-t)
+\end{equation}
+We get from the Generalized Brownian Motion as
+\begin{equation}
+	dS_t = (r-\delta)S_t dt + \sigma S_t dW_t
+\end{equation}
+under $Q$, where $r$, $\delta$, and $\sigma$ are constant. Then
+\begin{equation}
+	F(t,T) = \mathbb{E}_t^Q\left[ S_t \right]
+\end{equation}
+which gives
+\begin{equation}
+	F(t,T ) = S_t e^(r-\delta - \frac12 \sigma^2)(T-t)\mathbb{E}_t^Q\left[ e^{\sigma(w_T-w_0)} \right]
+\end{equation}
+so 
+\begin{equation}
+	F(t,T) = S_t e^{(r-\delta)(T-t)}
+\end{equation}
+
+What are the weaknesses here?
+\begin{enumerate}
+	\item We cannot obtain both contango and backwardation. A natural extension is to let $\delta_t$ be stochastics. This is good because we are capturing the relationship with inventory (inversely), but $\delta_t$ is unobservable
+	\item No mean reversion in spot price, so all forwards have the same volatility. (Can see this by applying Ito to $F(t,T)$, giving
+	\begin{equation}
+		dF_t = \frac{\partial F}{\partial t}dt + \frac{\partial F}{\partial S}dS + \frac12 \frac{\partial^2 F}{\partial S^2} dS^2
+	\end{equation}
+	which implies
+	\begin{equation}
+		\frac{dF_t}{F_t} = \sigma dW_t
+	\end{equation}
+	which has no $T$ dependence, which means no Samuelson effect.
+	An alternative: Schwarz one-factor ('97):
+	\begin{equation}
+		dS_t = \alpha(\mu - \log(S_t))S_tdt + \sigma S_t dW_t
+	\end{equation}
+	under $Q$. If we apply Ito to $y_t = \log S_t$, then
+	\begin{equation}
+		S_t = e^{y_t}
+	\end{equation}
+	where $y_t$ is ornstein uhlenbeck process
+	\begin{equation}
+		dY_t = \alpha(\mu - \frac{\sigma^2}{2\alpha} - y_t)dt + \sigma dW_t
+	\end{equation}
+	which is an exponential ornstein uhlenbeck process. It gives
+	\begin{equation}
+		\log S_t \sim N( (\log S_t) e^{-\alpha(T-t)} + \tilde{\mu}(1-e^{-\alpha(T-t)}) ,  \frac{\sigma^2}{2\alpha} (1-e^{-2\alpha(T-t)}))
+	\end{equation}
+	We can apply Ito to $y_te^{\alpha t}$. So it is easy to find $F(t,T)$:
+	\begin{equation}
+		F(t,T) = \mathbb{E}_t^Q\left[ S_t \right] = \exp \{ \text{mean} + \frac12 \text{variance} \}
+	\end{equation}
+	
+	Then apply Ito to $F_t$ to see
+	\begin{equation}
+		\frac{F(t,T)}{F(t,T)} = \sigma e^{-\alpha(T-t)}dW_t
+	\end{equation}
+	
+	Weaknesses: Volatility of long forwards is underestimated. Also all forwards are perfectly correlated.
+\end{enumerate}
+
+\chapter{Commodities \& Energy Markets 2 - Coulon}
+\section{Reduced form models}
+So far, two simple one-factor spot price model. The two main approaches are
+\begin{enumerate}
+	\item Generalized Brownian Motion (no mean reversion)
+	\begin{equation}
+		\frac{dS_t}{S_t} = (r-\delta)dt + \sigma dW_t \implies \frac{dF(t,T)}{f(t,T)} = \sigma dW_t
+	\end{equation}
+	
+	\item Exponential OU (mean reverting)
+	\begin{equation}
+		\frac{dS_t}{S_t} = \alpha (\mu - \log S_t) dt + \sigma dW_t \implies \frac{dF(t,T)}{F(t,T)} = \sigma e^{-\alpha(T-t)}dW_t
+	\end{equation}
+\end{enumerate}
+
+Here, the coefficients of the stochastic differential equations for $F(t,T)$ describe the ``vol term structure''.
+
+The key observation here is that:
+\begin{equation}
+	\text{mean reversion in } S_t \iff \text{decaying vol of } F(t,T).
+\end{equation}
+
+Picture goes here: time is horizontal axis. GBM is a constant $y$ value, exponential OU shows a decay. Typical data ( either implied or historical) show somewhat slower decay of the forward curves.
+
+Notes:
+\begin{enumerate}
+	\item Why the mean reversion of the spot prices? We can make economic arguments about short term shocks vs long term equilibrium (production/consumption levels).
+	
+	\item Why not mean reversion in $F(t,T)$ itself? It's a traded derivative, it must satisfy the martingale condition. (Forwards are martingales, at least for fixed $T$) 
+	
+	\item What about $F(t,t+\tau)$ (fixed $tau$)? For a start, it's not a traded contract. Therefore, it is likely that it could be mean reverting. And of course, as $\tau \to 0$, we should get the spot price.
+	
+\end{enumerate}
+
+Any exceptions? In theory, we can have something that mean reverts under $\mathbb{P}$ but not under $\mathbb{Q}$. But this is quite unusual or artificial. Why? Drift under $\mathbb{P}$ with a mean reverting process gives a market price at risk $\lambda$. That is, drift under $\mathbb{P}$ to drift under $\mathbb{Q}$ gives
+\begin{equation}
+	\alpha (\mu - Y_t)dt \to \alpha (\mu - \frac{\lambda \sigma}{\alpha} - Y_t)dt
+\end{equation}
+where $\lambda$ is the market price of risk.
+We could actually choose $\lambda$ to be a function of $Y_t$ to kill mean reversion, but again, this is very artificial.
+
+Related question: How does $\mathbb{E}^\mathbb{P}_t\left[ S_t\right]$ compare to $F(t,T)$? Clearly, it depends on the sign of $\lambda$;
+\begin{enumerate}
+	\item ``Normal backwardation'': $\lambda > 0$ (this is hedging pressure from risk producers pushing $F(t,T)$ downwards). See ``Inconvenience Yield and The Theory of Normal Contango'' -  Bouchuev, 2012 for an argument that recent change toward contango change driven by contango.
+	\item ``''
+\end{enumerate}
+
+
+\section{Two Factor Models}
+These try to correct some of the weaknesses of the volatility structures, etc. See Schwortz ('97) for two factors. We need short term shocks which are not mean reverting but long term which is.
+\begin{align}
+	dS_t =& (r-\delta_t) S_t dt + \sigma S_t dW_t\\
+	d\delta_t =& \alpha(\mu - \delta_t)dt + \tilde{\sigma} d\tilde{W}_t\\
+	dW_t d\tilde{W}_t =& \rho dt
+\end{align}
+The advantage is that this is a combination of mean reverting and non-mean reverting(which is basically just saying short term and long term.)
+
+\subsection{Schwartz \& Smith ('00)}
+Instead:
+\begin{equation}
+	S_t = \exp \{ X_t + Y_t \}
+\end{equation}
+where $X_t$ is arithmetic brownian motion and $Y_t$ is O.U.
+
+Both models are lognormal and find find
+\begin{equation}
+	F(t,T) = \mathbb{E}_t^\mathbb{Q}[S_t]
+\end{equation}
+We can show the equivalence with Schwartz ('97).
+
+\subsection{Extension: 3 factor}
+We can also add a Vasicek model for $r_t$. But this one doesn't really matter because interest rates have only minuscule amounts of volatility relative to the volatility of the commodity.
+
+\section{Calibration}
+The first priority is typically to match the observed forward curve. (That is, find $\alpha, \sigma, \mu$). But of course, we can't do this. So we need to let $\mu$ be time dependent.
+
+We take the Hull-White/Ho-Lee approach: Now we try to take $\{\alpha, \sigma, \mu(t)\}$. We can either take continuous time or some number of piecewise linear intervals to get the right number of parameters.
+
+One thing to be careful of: Can easily overfit the model because of the amount of freedom in this calibration. One thing to look out for is if the model calibrations come out completely differently each day; we should exercise caution.
+
+\section{Forward Curve Models}
+Instead, we can start with the forward curve directly (especially if we do not care about $S_t$). The general model under $\mathbb{Q}$ is:
+\begin{equation}
+	\frac{dF(t,T)}{F(t,T)} = \sum_{i=1}^N \sigma_i(t) dW_t^{(i)}
+\end{equation}
+where $W_t^{(i)}$ are independent brownian motions for simplicity.  
+Now we must choose:
+\begin{enumerate}
+	\item The number of factors $N$
+	\item Shape of $\sigma_1(t,T)$, ..., $\sigma_N(t,T)$.
+\end{enumerate}
+
+Notes on this: 
+\begin{enumerate}
+	\item All of the previous $S_t$ models are special cases of this. IE:if $N=1$, $\sigma_1(t,T) = \sigma e^{-\alpha(T-t)}$ gives the Schwarz 1-factor
+	\item Calibration to $F(0,T)$ $\forall T$ is immediate, because it is just the initial condition for the stochastic differential equation--there is no calibration.
+	
+	\item Can show that $F(t,T)$ is lognormal. Apply Ito to $\log F(t,T)$, which implies
+	\begin{equation}
+		F(t,T) = F(0,T) \exp \{\sum_{i=1}^N \left[-\frac12 \int_0^t \sigma_i^2(u,T)du + \int_0^t \sigma_i(u,t)dW_u^i\right]  \}
+	\end{equation}
+	
+\end{enumerate}
+
+So we went from the $S_t$ dynamics to the $F(t,T)$ dynamics. Can we go from the $F(t,T)$ dynamics to the $S_t$ dynamics? Recall that $S_t=F(t,t)$, so
+\begin{equation}
+	\log S_t = \log (F(0,t) + \sum_{i=1}^n \left[ ... \right] )
+\end{equation}
+If we apply Ito again to $\log S_t$ and do the calculations, then we have
+\begin{equation}
+	\frac{dS_t}{S_t} = \left[ \frac{\partial \log F(0,t)}{\partial t} - \sum_{i=1}^N \{ \int_0^t \sigma_i(u,t) \frac{\partial \sigma_i(u,t)}{\partial t} du + \int_0^t \frac{\partial \sigma_i(u,t)}{\partial t} dW_u^{(i)}\} dt\right] + \sum_{i=1}^N \sigma_i(t,t) dW_t^{(i)}
+\end{equation}
+which actually implies that $S_t$ is non-Markovian! (Bad news!) Unless you have just the right form that the terms cancel.
+
+How can we estimate the volatility functions? 1) From historical returns, we do Principal Component Analysis. 2) From options directly. People usually propose a particular parametric form. One option (which Glen probably uses):
+\begin{equation}
+	\frac{d F(t,T)}{F(t,T)} = \sum_{i=1}^N v_i(t) \sigma_i(T) e^{-\alpha_i (T-t)}dW_t^{(i)}
+\end{equation}
+where the terms$ v_i(t), \sigma_i(T)$, and $e^{-\alpha_i (T-t)}$ represent the affect of the whole curve, maturity specific, and steepness of the vol term structure. (That is, a Gaussian Exponential Factor Model.)

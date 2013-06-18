@@ -1,0 +1,337 @@
+% June 17
+\chapter{Systemic Risk 1 - Fouque}
+\section{History}
+\begin{enumerate}
+	\item 60's and 70's: 
+	\begin{enumerate}
+		\item Problem of Portfolio Allocation (Mean-Variance/Markovitz/)
+		\item Option Pricing(1973) (Black-Scholes/etc)
+	\end{enumerate}
+	\item 90's:
+	\begin{enumerate}
+		\item Local Volatility
+		\item Stochastic Volatility
+	\end{enumerate}
+	\item 2000's:
+	\begin{enumerate}
+		\item Credit - Taking into account the possibility of default(of company, counterparty, etc)
+		\item Credit Basket - structuring risk(Mortgages)
+		\item Credit Default Swap
+		\item Collatorized Default Options - Huge Huge Market.
+		\item Financial Crisis - Mortgages were completely mispriced.
+	\end{enumerate}
+	
+	\item 2008-2010:
+	\begin{enumerate}
+		\item NIF: National Institute of Finance (for doing research on the banking \emph{system})
+		\item Handbook on Systemic Risk: Cambridge
+		\item Dodd-Frank: Created Office of Financial Research (under the treasury department)
+	\end{enumerate}
+\end{enumerate}
+
+% \begin{definition}\label{def:systemic_risk}
+% 	We define \emph{systemic risk}: 
+% 	\begin{enumerate}
+% 		\item a lot of defaults
+% 		\item lack of liquidity
+% 	\end{enumerate}
+% \end{definition}
+
+\section{Systemic Risk}
+Can consider from many views: mathematics, statistics, etc.
+
+Two main approaches:
+\begin{enumerate}
+	\item Coupled Diffusions: Continuous time
+	\item Networks
+\end{enumerate}
+
+The starting point is Brownian Motion. Suppose we start with an asset:
+\begin{equation}
+	dS_t = \mu S_t dt
+\end{equation}
+which we can solve by
+\begin{equation}
+	S_t = S_0e^{\mu t}
+\end{equation}
+Okay, but usually we don't know the $\mu$, and there is some noise! How can we add noise? Since $\mu$ is the return, maybe by adding some \emph{white noise}
+\begin{equation}
+	dS_t = S_t(\mu dt + \text{Noise})
+\end{equation}
+where the Noise term is given by Brownian Motion, which has the form
+\begin{equation}
+	\sigma dW_t
+\end{equation}
+with $\sigma > 0$, and $(W_t)_{t\geq 0}$ for $t\leq T$. The properties of Brownian Motion:
+\begin{enumerate}
+	\item $W_0=0$
+	\item $W_t$ is continuous
+	\item Independent, increments
+	\item If we consider
+	\begin{equation}
+		0 < t_1 < ... < t_n \leq T
+	\end{equation}
+	then it gives rise to many differences:
+	\begin{equation}
+		(W_{t_1} - W_{t_0}, W_{t_2} - W_{t_1}, ... W_{t_n} - W_{t_{n-1}})
+	\end{equation}
+	such that
+	\begin{equation}
+		\mathcal{D}(w_t - w_s) = \mathcal{N}(0, t-s)
+	\end{equation}
+\end{enumerate}
+A bit of Brownian Motion History:
+\begin{enumerate}
+	\item Brown
+	\item Buchelier (1900)
+	\item Albert Einstein (1905): Heat Equation/Brownian Motion tie-in
+	\item Weiner (1930s): Constructed Brownian Motion: Construct a measure over all continuous trajectories
+	\item Ito (1940s): Figures out chain rule for brownian motion
+	\item Samuelson (1960s): Generalized Brownian Motion
+\end{enumerate}
+
+If we have a bounded function $f(t)$ where
+\begin{equation}
+	\sum_{0}^T \left( f(t_{i+1}) - f(t_i) \right) < \infty
+\end{equation}
+If we have a brownian motion instead,
+\begin{equation}
+	\sum_0^T \left| W_{t_{i+1}} - W_{t_i} \right| \to \infty
+\end{equation}
+
+Book Reference: Carson \& Tree???
+
+\section{Hitting Times}
+Draw a plot:
+\begin{enumerate}
+	\item time on horizontal axis
+	\item y = brownian motion on vertical axis
+	\item line $y=\alpha$.
+\end{enumerate}
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=.9\linewidth]{brownian_motion.png}
+	\caption{caption}
+	\label{fig:label}
+\end{figure}
+
+We are interested in the time $\tau_{\alpha}$, defined by
+\begin{equation}
+	\tau_a = \inf \{ t>0 : W_t \geq a \}
+\end{equation}
+(We are really looking for $W_t=a$)
+
+We can instead think
+\begin{equation}
+	\{ \tau_a\leq t \} = \{ \max_{0\leq s \leq t} W_s \geq a \}
+\end{equation}
+Then
+\begin{equation}
+	\tilde{W}_t = W_t \Theta_{t \leq \tau} + (2a - W_t) \Theta_{t > \tau}
+\end{equation}
+is a Brownian Motion. RP.
+
+Now suppose we want to find the probability:
+\begin{align}
+	\mathbb{P}(\tau& \leq t, |W_t-a|> b) \\
+	=& \mathbb{P}(\tau \leq t, W_t > a+b) + \mathbb{P}(\tau \leq t, W_t < a-b)\\
+	=& 2\mathbb{P}(\tau \leq t, W_t > a+b)\\
+	=& 2N_{(0,t)}(-a-b)
+\end{align}
+But we also know that
+\begin{equation}
+	\mathbb{P}(\tau \leq t) = 2N_{(0,t)}(-a)
+\end{equation}
+
+A few remarks:
+\begin{enumerate}
+	\item $\tau$ is predictable. We say that $\tau$ is \emph{announced} by a sequence $\tau_n$, the hitting time of $a-\frac1n$.
+	\item Large Deviations: Consider the probability of a very large deviation ($a \to \infty$)
+	\begin{equation}
+		\mathbb{P}(\tau_a \leq t) \sim e^{-\frac{a^2}{2t}}
+	\end{equation}
+	where we mean this in term of the log.
+\end{enumerate}
+
+
+\chapter{Systemic Risk 2 - Fouque}
+\section{Joint Distributions}
+Consider the joint distribution of $(\tau,W_t)$. We can think of this as
+\begin{equation}
+	``\mathbb{P}(\tau\leq t, W_t = v)'' = \begin{cases}
+		\mathbb{P}(W_t = v) & \text{if } v > a\\
+		\mathbb{P}(W_t=2a-v) & \text{if } v < a
+	\end{cases} = \begin{cases}
+		g(v)\\
+		g(2a-v)
+	\end{cases}
+\end{equation}
+
+For nonstandard Brownian Motions,
+\begin{equation}
+	X_t = x + \mu t + \sigma W_t
+\end{equation}
+And then
+\begin{equation}
+	\tau = \inf \{ t> 0, x_t \geq a \}
+\end{equation}
+So then,
+\begin{align}
+	x_t \geq a  \iff& (x+\mu t + \sigma W_t \geq a)\\
+	\iff& \mu t + \sigma W_t \geq a-x\\
+	\iff& \frac{\mu}{\sigma} t + w_t \geq \frac{a-x}{\sigma}
+\end{align}
+Define $\theta=\frac{\mu}{\sigma}$, and $\tilde{a}=\frac{a-x}{\sigma}$.
+
+Then we have that
+\begin{equation}
+	W_t + \theta t \equiv W_t^\theta
+\end{equation}
+Then Girsanov's Thm is 
+\begin{equation}
+	M_t^\theta = e^{-\theta W_t - \frac{1}{2}\theta^2t}
+\end{equation}
+Then
+\begin{equation}
+	\mathbb{E}(M_t^\theta) = 1
+\end{equation}
+and
+\begin{equation}
+	\frac{dP^\theta}{dP}|_{f_x} = M^\theta_t
+\end{equation}
+
+We can show that $W_t + \theta t \equiv W_t^\theta$ is a brownian motion under $\mathbb{P}^\theta$. So next,
+\begin{equation}
+	\mathbb{E}^\theta \left( x / F_s\right) = \frac{1}{M^\theta_s} \mathbb{E}(X M^\theta_t / F_s) 
+\end{equation}
+Then we will be able to show
+\begin{equation}
+	\mathbb{E}^\theta \left( e^{iu(W_t^\theta - W_s^\theta)} \right) = e^{-\frac{\mu^2}{2}(t-s)}
+\end{equation}
+Why do we care about all of that? Well, we can do the following:
+\begin{equation}
+	\tau = \inf \{ t> 0, W_t^\theta \geq \tilde{a} \}
+\end{equation}
+Then
+\begin{equation}
+	\mathbb{P}(\tau \leq t) = \mathbb{E}(\Theta_{\tau \leq t}) = \mathbb{E}^\theta \equiv \left( \Theta_{\tau \leq t} \frac{d\mathbb{P}}{d\mathbb{P}^\theta} \right)
+\end{equation}
+We can use the joint distribution of $(\tau, W_t^\theta)$.
+\begin{equation}
+	= N( -\frac{a - x - \mu t}{\sigma \sqrt{t}}) + e^{\frac{2(a-x)\mu)}{\sigma^2}} N(-\left( \frac{a - x + \mu t}{\sigma \sqrt{t}}\right))
+\end{equation}
+
+\section{Geometric Brownian Motion}
+Now consider
+\begin{equation}
+	dS_t = S_t (\mu dt + \sigma dW_t)
+\end{equation}
+which is a stochastic differential equation. We should think of this as a convient notation for something more complicated. Basically,
+\begin{equation}
+	S_t dW_t \to \int_0^t S_a dW_a
+\end{equation}
+
+We will use Ito's lemma which lets us do the chain rule with a brownian motion:
+\begin{equation}
+	dg(W_t) = g'(W_t) dW_t + \frac12 g''(W_t)dt
+\end{equation}
+where $g(t,W_t)$ is once differentiable in $t$ and twice differentiable in $W_t$. Then if we have
+\begin{equation}
+	dX_t = \varphi_t dt + \psi_t dW_t
+\end{equation}
+then
+\begin{equation}
+	dg(X_t)  = g'(X_t)dX_t + \frac{1}{2} g''(X_t)d\langle x\rangle_t
+\end{equation}
+Then an SDE like
+\begin{equation}
+	dX_t = b(t,X_t)dt + \sigma(t,X_t) dW_t
+\end{equation}
+has a solution like
+\begin{equation}
+	S_t = S_0 e^{(\mu - \frac{\sigma^2}{2})t} + \sigma W_t
+\end{equation}
+
+\section{Passage Time}
+Now consider
+\begin{equation}
+	dS_t = S_t(\mu dt + \sigma dW_t) = S_t(r dt + \sigma(dW_t + \frac{\mu-r}{\sigma}dt))
+\end{equation}
+well then, $\mathbb{P}^*$: $e^{-rt}S_t$ is a martingale.
+
+\section{Defaultable Bond}
+Now we want to have a defaultable bond. The bond starts at $S_0$ and has a default value of $D$(if it touches $D$ before maturity time $T$ then we have no payout, otherwise get 1.) So then the price of the bond is
+\begin{equation}
+	\mathbb{P}^D_{(0,T)} = \mathbb{E}^*(\Theta_{\tau > T}) = \mathbb{P}^*(\tau > T).
+\end{equation}
+So now we consider
+\begin{equation}
+	\{ \inf_{0 < t \leq T} S_0 e^{(r- \frac{\sigma^2}{2})t + \sigma W_t} > 0 \} 
+\end{equation}
+By taking the logarithm, we get a nonstandard brownian motion, which we can evaluate. By some computation, we can get
+\begin{equation}
+	\mathbb{P}^\theta(0,T) = e^{-rT}\left[ N(d_2^+) - \left(\frac{S_0}{D} \right)^{1-\frac{2r}{\sigma^2}}N(d_2^-) \right]
+\end{equation}
+with
+\begin{equation}
+	d_2^{\pm} = \frac{\pm \log \frac{S_0}{D} + \left(r - \frac{\sigma^2}{2} \right)t}{\sigma \sqrt{t}}
+\end{equation}
+
+The main ingredients here were reflection principle and change of measure. Alternatively, one could do this completely with partial differential equations.
+
+\section{Yield}
+We can represent the yield by
+\begin{equation}
+	y(0,t) = -\frac{1}{T}\log \frac{\mathbb{P}^D(0,T)}{\mathbb{P}(0,T)}
+\end{equation}
+
+\subsection{Example}
+Consider some bond $B_1$ with a 10\% default rate. This is too risky for index funds, and not risky enough for hedge fund.
+
+A financial engineer will do this: Buy two bonds, $B_1$ and $B_2$ (both with 10\% default rate), then stack them. Now
+\begin{enumerate}
+	\item pays if 2 defaults: 0.99
+	\item pays if 1 default: .8
+\end{enumerate}
+What's the problem? We assumed independence.
+
+In credit, the main risk was correlation of default. This is not really computable.
+
+Consider two processes $W_t^{(1)}$, $W_t^{(2)}$ and the hitting times $\tau^{(1)}$ and $\tau^{(2)}$ try and figure the probability $\mathbb{P}(z^{(1)} > T; z^{(2)}> T)$, well, it's hard to quantify. If 
+
+\section{Systemic Risk}
+Usually we will consider the log-capitalization of Banks, and in particular multiple banks:
+\begin{equation}
+	dX_t^i = \mu_t^i dt + \sigma^i dW_t^i.
+\end{equation}
+\subsection{Toy Model}
+We can consider the drift of capitalization, which includes some coupling of the systems.
+\begin{equation}
+	dX^i_t = \frac{a}{N} \sum_{j\ne i} (X^j_t - X_t^i)dt + \sigma^i (\rho dW_t^\theta + \sqrt{1-\rho^2} dW_t^i)
+\end{equation}
+where the $W^i_t$ are independent.
+What is the intuition here? That borrowing and lending goes on between the banks. This is related to flocking and swarming models.
+
+What other mathematical model behaves this way(where we have randomness but also attraction)? ornstein uhlenbeck process:
+\begin{equation}
+	dY_t = a(m-y_t)dt + \sigma dW_t,
+\end{equation}
+which we know how to solve:
+\begin{equation}
+	Y_t = m + (y-m)e^{-at} + \sigma e^{-at} \int_0^t e^{as}dW_p
+\end{equation}
+And we know that this is $\mathcal{N}(m, \frac{\sigma^2}{2a})$.
+
+Next step is:
+\begin{equation}
+	d(\frac{1}{N} \sum_{i=1}^N X_t^i ) = 0 dt + \sigma \rho dW_t^0 + \frac{\sigma\sqrt{1-\rho^2}}{N} \sum_{i=1}^N dW_t^i.
+\end{equation}
+Now consider if $X_0^i=x_0^i=0$, which gives
+\begin{equation}
+	\bar{x}_t = \frac{1}{N}\sum_{i=1}^N X_t^i = \sigma \rho W_t^0 + \frac{\sigma \sqrt{1-\rho^2}}{N} \sum_{i=1}^N W_t^i
+\end{equation}
+If we take $\rho=0$ for a second, then
+\begin{equation}
+	\bar{x}_T \sim \frac{\sigma}{\sqrt{N}}\tilde{W}_t
+\end{equation}

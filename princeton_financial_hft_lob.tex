@@ -1,0 +1,258 @@
+\chapter{High-Frequency Trading \& Limit Order Book 1 - Carmona: Limit Book Orders}
+Black-Scholes theory. The price is given by a single number. There is infinite liquidity. One can buy or sell any quantity at this price with no impact on the asset price. This fixes to account account for liquidity frictions. This doesn't account for transactions costs, and we add some liquidity frictions, or put the transaction cost as a proxy for liquidity. This theory will not be satisfactory for large trades over short periods or high frequency trading. We need to understand the market microstructure.
+
+Several types of markets:
+\begin{enumerate}
+	\item Quote driven Markets: Market makers or dealer centralizes buy/sell orders and provides liquidity by setting bid and ask quotes.
+	\item Order driven markets: Electronic platforms aggregate all available orders in a {\bf Limit Book Order}. (Eg: NYSE, NASDAQ, LSE, etc)
+\end{enumerate}
+Here, the same stock is traded on several venues. Price discovery is difficult due to many instruments being traded off the public market book. The competition between markets leads to lower fees and smaller tick sizes.
+
+Recently, a huge change has been the creation of dark pools(etc Lit market). Another issue is the increase in updating frequency of order books.
+
+\section{High Frequency Trading}
+We suspect 60-75\% high frequency trading, 10\% of which is predatory. (Amaranth, etc)
+
+Pros: Smaller tick size; HF traders provide extra liquidity; dark pools reduce trade execution costs from price impact; markets more efficient.
+
+Cons: Expensive technological arms race; Dark trading incentivizes price manipulation, fishing, predatory trading; Little or no oversight possible by humans (eg, flash crash) and increased systemic risk; HF trading algorithms do not use economic fundamentals(e.g. value and profitability of a firm.)
+
+\section{HFT Mishaps}
+Flash crash: Dow Jones IA plunged about 1000 points (recovered in mintes) biggest one-day point decline.
+
+Other mishaps: AP Twitter Feed/etc.
+
+\section{Limit Order Book}
+List of all waiting buy and sell orders.
+\begin{enumerate}
+	\item The prices are multiples of the tick size.
+	\item For a given price, orders are arranged FIFO queue
+	\item At each time $t$,
+	\begin{enumerate}
+		\item The {\bf bid} price $B_t$ is the price of the highest waiting buy order.
+		\item The {\bf ask} price $A_t$ is the price of the lowest waiting sell order.
+	\end{enumerate}
+	\item The state of the order book is modified by order book events: Limit orders, market orders, cancelations
+	\item Consolidated Order book: If the stock is traded in several venues, one aggregates over all visible trading venues. (Then the question becomes, which exchange should we submit the order to?)
+	\item Here, little or no discussion of pools.
+\end{enumerate}
+
+\section{Role of order book}
+The LOB is crucial in high frequency finance: it explains the transaction costs. 
+The liquidity providers post trading intentions: bids and offers. 
+Liquidity takers execute certain orders: Adverse selection. 
+We can construct a plot by showing the price in the limit order on horizontal axis and the volume of desired shares on the vertical axis.
+Because of the FIFO nature we probably can not get in at the highest bid or lowest ask.
+
+\subsection{DELL}
+Can we see a selling panic on the order book? Yes. Data is giant. 
+
+Critical point is the bid/ask spread
+\section{Limit order}
+A limit order sits in the order book until it is either 
+1) executed against a matching market order or 
+2) it is canceled.
+A Limit order
+\begin{enumerate}
+	\item May be executed very quickly if it corresponds to a price near the bid and the ask
+	\item It may take a long time if
+	\begin{enumerate}
+		\item The market price moves away from the requested price.
+		\item The requested price is too far from the bid/ask.
+	\end{enumerate}
+	\item Can be canceled at any time.
+\end{enumerate}
+Typically, a limit order waits for a match. The transaction cost is {\bf known}, the execution time is {\bf uncertain}.
+
+\section{Market Order}
+The market order is an order to buy/sell a certain quantity of the asset at the best available price in the book.
+Agents can put a market order that, for a buy (sell) order,
+\begin{enumerate}
+	\item The first share will be traded at the ask (bid) price.
+	\item The remaining one(s) will be traded some ticks above(below).
+\end{enumerate}
+in order to fill the order size. The ask (bid) price is then modified accordingly.
+
+\section{Cancellation}
+We can also cancel orders.
+
+\section{LOB Dynamics summary}
+Agents can put a limit order aand wait for a match.
+
+Agents can put a market order that consumes the cheapest limit orders in the book.
+
+Agents can put a cancellation.
+
+\section{Market impact of large fills}
+Current mid-price: average.
+Fill size $N=76015$, eg buy. 
+We fill $n_1$ shares available at best bid $p_1$; etc.
+We fill $n_k$ shares at price $p_k>p_{k-1}$, such that $N=\sum n_i$. 
+The transaction cost is $\sum n_ip_i$. 
+Then the effective price is $\frac{1}{N}\sum n_ip_i$. 
+The new mid-price is now the new average of the order book(with the filled ones removed, naturally.)
+Note that there is a widening of the bid-ask spread, as well as a change in the height of the bars (because there is less volume available now.)
+
+
+\chapter{High-Frequency Trading \& Limit Order Book 2 - Carmona}
+\section{Hidden Liquidity}
+Some exchanges allow agents to submit hidden orders. They are made visible to the broader market after being executed.
+This is a controversial issue: it is a barrier to the implementation of a full ytransparent market, and is an impediment to price discovery and information dissemination.
+
+The results of the first empirical analyses:
+\begin{enumerate}
+	\item Encourage fishing
+	\item After it is revealed that a hidden order was executed: a rash increase of order placement inside the bid-ask after.
+	\item HF traders are divided into two groups: Traders trying to take advantage of the remaining hidden liquidity, and traders trying to steal execution priority from the fully hidden order.
+\end{enumerate}
+
+Distinction between iceberg or fully hidden order.
+
+\subsection{Partially Hidden Orders: Iceberg Orders}
+Dark liquidity posted inside the LOB. 
+Two components: Shown quantity and the hidden remainder. 
+Order queued with the lit part of the LIB, only the shown quantity is visible.
+ When the order reaches the front of the queue, only the display quantity is filled.
+Then the grade (price and quantity filled) is revealed.
+The hidden part is put at the back of the queue. 
+Sometimes an extra execution fee is charged by the exchange.
+
+\subsection{Fully Hidden Order}
+
+\section{Dark Pools}
+Dark pools are an electronic engine that matches buy and sell orders without routing them to lit exchanges.
+The reason is to move large amounts without impacting the price (no need for iceberg orders).
+These are run by private brokerages:
+\begin{enumerate}
+	\item Ex: Liquidnet, Pipeline, ITG Posit, Goldman SIGMA X
+	\item Participatnts submit lists of orders to matching engine
+	\item Matched orders are executed at the midpoint of the bid-ask spread.
+	\item PROS: trade at midpoint can be better than lit market
+	\item CONS: may have to wait a long time.
+\end{enumerate}
+The SEC regulates this in the US as Alternative Trading Systems.
+They have little to no public disclosure, and little transparency.
+
+Supposedly, 32\% of trades in 2012 were on dark pools.
+
+
+\section{Order book Modeling Objectives}
+Offer a framework to investigate order impact on execution prices.
+\begin{enumerate}
+	\item Optimal mult-period liquidation strategies against a limit order book
+	\item Detailed but tractable stochastic model of spread and transaction costs
+	\item Benchmark tracking slippage
+	\item Opportunity costs of delayed trading.
+\end{enumerate}
+
+\section{Order Book Models}
+Roughly speaking, LOB is a set of two histograms (Bids \& Asks). The reduced form model sets it up as a Markov process $(O_t)_t$ on a large state space of order books $\mathcal{O}$. The simplest model:
+\begin{enumerate}
+	\item Smith-Farmer-Guillemot-Kirshnamurthy(SFGK) Model
+	\item Market orders (buys and sells) arrive according to a Poisson process with rate $\mu/2$.
+	\item Cancellation of existing limit orders: outstanding limit orders ``die'' at a rate $\nu$.
+\end{enumerate}
+
+A little bit better one: Cont-Stoikov-Talreja:
+\begin{enumerate}
+	\item $\mathcal{P}=\{1,2,..,n\}$ is a price model
+	\item LOB at time $t$ is $O(t)$.
+	\item Admissible state space:
+	\begin{equation}
+		\mathcal{O} = \{ O \in \mathbb{Z}^n; \exists 1\leq k \leq \ell \leq n, O_p<0 for p\leq k,
+				O_p=0 for p=k..\ell
+				O_p>0 for p=\ell..n 
+				\}
+	\end{equation}
+	\item Ask price at time $t$
+	\begin{equation}
+		P_A(t):= (n+1)\wedge \inf \{ p; 1\leq p \leq n, O_p(t) > 0 \}
+	\end{equation}
+	\item Bid price at time $t$
+	\begin{equation}
+		P_B(t):= 0 \vee \sup \{ p; 1\leq p \leq n, O_p(t) < 0\}
+	\end{equation}
+	\item Mid Price: $\tilde{P}(t) = \frac12 [P_A(t) + P_B(t)]$
+	\item Bid-ask spread: $\tilde{S}(t) = P_A(t) - P_B(t)$
+	
+\end{enumerate}
+
+For the sake of simplicity, we assume changes to the Limit Order Book happen one charse at a time.
+We review the events causing the LOB state transitions. One convenient notation here is:
+\begin{equation}
+	O^{p\pm 1}_j = \begin{cases}
+		O_j^p   	& \\
+		O_j^p \pm 1	& 
+	\end{cases}
+\end{equation}
+
+Practical Assumptions:
+\begin{enumerate}
+	\item Limit buy orders arrive at a distance of $i$ ticks from the opposite best quote at independent, exponential times.
+\end{enumerate}
+
+We can summarize all the transition rates with a markov chain.
+The chain remains in $\mathcal{O}$ if it starts there, which is to say that
+\begin{equation}
+	P_B(t) \leq P_A(t), \forall t > 0
+\end{equation}
+if it is true at time $t=0$.
+
+In summary:
+\begin{enumerate}
+	\item This is a descriptive analysis
+	\item Uses ideas from queuing theory: first passage times of Birth-and -Death processes
+	\item Laplace transform techniques
+	\item We can compute/estimate probabilities of condition events
+	\item But.... it's not sufficient for optimal order book strategies.
+\end{enumerate}
+
+Optimization problems: The goal of a LOB model is to
+\begin{enumerate}
+	\item Understand the costs of transactions
+	\item Develop efficient (or optimal) trading strategies
+\end{enumerate}
+
+Typical challenge: Sell $x_0$ units of an asset and maximize the sales revenues, using a limited number of market orders only!
+\begin{equation}
+	\sup_{\tau_1 \leq ... \tau_n < T} \mathbb{E}(U(\sum_{i=1}^N P_B(\tau_i)))
+\end{equation}
+where $U$ is a utility function and $\mathbb{E}$ is the expectation over a model for the dynamics of the LOB $O_t$.
+
+This is a prohibitively large-dimensional model.
+
+\section{HUGE SECTION}
+here was the end of the first lecture...
+\section{queries}
+We already saw that we should split and spread large orders, so:
+\begin{enumerate}
+	\item How can we capture market price impact in a model?
+	\item What are the desirable properties of a price impact model?
+	\item How can we compute optimal execution trading strategies?
+	\item What happens when several execution strategies interact?
+\end{enumerate}
+
+\section{``Amlgren-Chriss Price Impact'' Model}
+Here we assume that the unaffected (fair) price is given by a semi-martingale.
+The mid-price is affected by trading, via two parts:
+\begin{enumerate}
+	\item Permanent price impact given by a function $g$ of the trading speed:
+	\begin{equation}
+		dP_t^{mid} = g(v(t))dt + \sigma dW_t
+	\end{equation}
+	
+	\item A temporary price impact given by a function $h$ of the trading speed:
+	\begin{equation}
+		P^{trans}_t = P^{mid}_t + h(v(t))
+	\end{equation}
+\end{enumerate}
+
+The problem is: we want find a deterministic continuous transaction path to maximize the mean-variance reward
+\begin{enumerate}
+	\item Closed form solution when permanent and instaneous price impact functions $g$ and $h$ are linear.
+	\item Efficient frontier: the speed of trading and hence risk/return is controlled by a risk aversion parameter.
+\end{enumerate}
+
+This is widely used within the industry.
+
+\subsection{Criticisms}

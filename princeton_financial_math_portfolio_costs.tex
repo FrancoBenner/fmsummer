@@ -1,0 +1,109 @@
+\chapter{Portfolio Optimization, Transaction Costs \& Dynamic Games 1 - Muhle-Karbe}
+\begin{enumerate}
+	\item Setting
+	\item Frictionless Control Heuristics (no transaction costs)
+	\item Verification via Convex Duality
+	\item Control Heuristics with Transaction Costs
+	\item Verification via Shadow Prices
+\end{enumerate}
+
+We'll consider the Black-Merton-Scholes model with two assets:
+\begin{enumerate}
+	\item Safe asset normalized to $S^0_t=1$
+	\item Risky asset following geometric Brownian Motion:
+	\begin{equation}
+		\frac{dS_t}{S_t} = \mu dt + \sigma dW_t
+	\end{equation}
+	for a standard Brownian motion $(W_t)_{t\geq 0}$ defined on a filtered probability space $(\Omega, \mathcal{F}, (\mathcal{F}_t)_{t\geq 0}, P)$.
+	\item Returns have constant expectations $\mu > 0$, vol $\sigma >0$
+	\item simplest benchmark
+	\item no tx costs
+\end{enumerate}
+
+We start with a positive cash endowment $x > 0$. An investor c hooses number $\varphi_t$ of risky shares. Corresponding wealth process:
+\begin{equation}
+	X_t^{\varphi} = x + \int_0^t \varphi_s dS_s
+\end{equation}
+The safe position implicitly determined by self-financing condition:
+\begin{equation}
+	\varphi_t^0 = x + \int_0^t \varphi_s dS_s - \varphi_t S_t
+\end{equation}
+To make everything well-defined, $(\varphi_t)_{t\geq 0}$ needs to be $S$-integrable:
+\begin{equation}
+	\int_0^t \varphi_s^s ds < \infty \qquad \forall t \geq 0
+\end{equation}
+
+Preferences: Investor maximize expected utility from terminal wealth at some time horizon $T>0$:
+\begin{equation}
+	\mathbb{E}\left[ U(X^\varphi_T) \right] \to \text{max}
+\end{equation}
+over all trading strategies $\varphi_t$.
+
+The utility function $U$ should:
+\begin{enumerate}
+	\item be increasing: more is better than less.
+	\item Concave: risky payoff is worth than its expectation
+	\item Inada conditions: Extra dollar matters a lot when poor, irrelevant when rich. (Codify in math by:
+	\begin{align}
+		\lim_{x\to \infty} U'(x) \to 0\\
+		\lim_{x\to 0} U'(x) \to \infty
+	\end{align})
+\end{enumerate}
+
+One messiness here is this: The units are goofy. An alternative is to use a different unit.
+A better interpretation is: maximize certainty equivalent:
+\begin{equation}
+	CE(\varphi) = U^{-1}(\mathbb{E}\left[ U(X_T^\varphi) \right]) \to \text{max}
+\end{equation}
+
+How can we determine optimal strategy and utility? There's a complex dependence on market parameters, investment horizon, and preferences! How can we tackle an infinite dimensional stochastic control problem? Today, we'll do a heuristic derivation and tomorrow, we'll do a rigorous verification.
+
+We first make the problem harder: via a value function like
+\begin{equation}
+	v(t,x) := \sup_{(\varphi_s)_{s\in[t,T]}} \mathbb{E}\left[ U(x + \int_t^T \varphi_s dS_s) | \mathcal{F}_t\right]
+\end{equation}, which evaluates along any wealth process $X_t^\varphi$ (a supermartingale with nonpositive drift) and along optimal wealth $X_t^{\hat{\varphi}}$(martingale with zero drift.) This boils down to: ``Martingale optimality principle of stochastic control.'' 
+
+What do we mean by all of this? We start with
+\begin{align}
+	\mathbb{E}& \left[ v(t,X_t^\varphi) | \mathcal{F}_s \right] \\
+	 =& \mathbb{E} \left[ \mathbb{E}\left[ U(X^\varphi_t + \int_t^T \hat{\varphi}_s dS_s) | \mathcal{F}_t\right] | \mathcal{F}_s \right] \\
+	=& \mathbb{E} \left[ U(X^\varphi_t + \int_t^T \hat{\varphi}_s dS_s) | \mathcal{F}_s \right] \\
+	=& \mathbb{E} \left[ U(X^\varphi_s + \int_s^t \hat{\varphi}_s dS_s)+ \int_t^T \hat{\varphi}_s dS_s) | \mathcal{F}_s \right] \\
+	\leq& \mathbb{E} \left[ U(X^\varphi_s + \int_s^T \hat{\varphi}_s dS_s) | \mathcal{F}_s \right] \\
+	=& v(s,x_s^\varphi)
+\end{align}
+
+How can we use the martingale optimality princeiple? The value function $v(t,x)$ generally can depend on many state variables. Here, the wealth dynamics
+\begin{align}
+	d X_t^\varphi = \mu \varphi_t S_t dt + \sigma \varphi_t S_t dW_t\\
+			=& \mu \eta_t dt + \sigma \eta_t dW_t
+\end{align}
+for some risky position $\eta_t$ only depend on the control $\eta_t$. One guess is a value function only depends on the initial wealth $x$ and time $t$. This is an assumption!! Not a result. This needs to be verified eventually.
+
+Suppose that the value function is smooth. Then Ito's formula yields
+\begin{equation}
+	dv(t, X^\eta_t) = (v_t + \mu \eta_t v_x + \frac{\sigma^2}{2}\eta^2_t v_{xx})dt + (...) dW_t
+\end{equation}
+This should be a supermartingale for any $\eta_t$: drift $\leq 0$. It will also be a martingale for the optimizer $\hat{\eta}_t$: with drift = 0. Then maximize drift pointwise in $\eta_t$. Plug in maximizer. Set to zero. This yields equations for optimal stategry and value functions.
+
+% missed some stuff here...
+
+We can consider a special case: Take the exponential utility function $U(x) = -e^{-ax}$, and factor the wealth out via $v(t,x) = e^{-ax}v(t,0)$, with the constant absolute risk-tolerance $1/a$. This gives the constant risky position
+\begin{equation}
+	\hat{\eta}_t = \frac{\mu}{a \sigma^2}
+\end{equation}
+This is independent of horizon. It is independent of wealth. The value function and certainty-equivalent are the same.
+\begin{equation}
+	v(t,x) = -e^{-ax} \exp(\frac{\mu^2}{2\sigma^2(t-T)}) \implies CE(\hat{\varphi}) = x + \frac{\mu^2}{2 a \sigma^2} T
+\end{equation}
+Here, the assets are ranked by the Sharpe ratio $\mu/\sigma$. The same Sharpe ratio leads to the same payoffs.
+
+
+An alternative: If we have twice as much money, we are willing to take twice as much risk. This is debatable, but why not??
+
+\begin{equation}
+	U(x) = \frac{x^{1-\gamma}}{1-\gamma} 
+\end{equation}
+rederive v(t,x), risk tolerance, proportion, value function, certainty equivalent.
+
+
