@@ -105,5 +105,115 @@ An alternative: If we have twice as much money, we are willing to take twice as 
 	U(x) = \frac{x^{1-\gamma}}{1-\gamma} 
 \end{equation}
 rederive v(t,x), risk tolerance, proportion, value function, certainty equivalent.
+\begin{equation}
+	v(t,x) = x^{1-\gamma} v(t,1)
+\end{equation}
+Constant relative risk-tolerance $x/\gamma$.
+Constant risky proportion $\hat{\pi}_t := \hat{\eta}_t / X^{\hat{\eta}}_{t} = \mu / \gamma \sigma^2$, which is independent of horizon.
+Investment scales with wealth.
+
+Value function and certainty equivalent:
+
+\chapter{Lecture 2}
+We can verify that all of this actually works.
+
+\section{Verification via Convex Duality}
+Need to rule out doubling strategies.
+Usual notion: $X^\varphi_t \geq -C$ (we have a bounded credit line).
+The value $C=0$ works well for utilities defined on $\mathbb{R}_+$; optimal wealth process for power utility follows geometric Brownian motion:
+\begin{equation}
+	\frac{dX_t^{\hat{\pi}}}{X_t^{\hat{\pi}}} = \frac{\mu}{\gamma \sigma^2} (\mu dt + \sigma dW_t)
+\end{equation}
+This is not compatible with utilities on $\mathbb{R}$: optimal wealth processes for exponential utility follows brownian motion with drift:
+\begin{equation}
+	dX_t^{\hat{\eta}} = \frac{\mu}{\alpha \sigma^2} (\mu dt + \sigma dW_t)
+\end{equation}
+
+How can we verify?
+
+\subsection{Convex Duality}
+For a concave function $U$, we can define the conjugate:
+\begin{equation}
+	V(y) = \sup_{x > 0} \{ U(x) - xy \}
+\end{equation}
+Then
+\begin{equation}
+	\mathbb{E}\left[ U(X^\varphi_T) \right] \leq 
+	\mathbb{E}\left[ V(yY_T) \right] + \mathbb{E}\left[ X_TY_T \right]
+	= \mathbb{E}\left[ V(yY_T) \right] + \mathbb{E}_Q\left[ X_T^\varphi \right]y
+\end{equation}
+for $y>0$ and density process $Y_t$ of an EMM $\mathbb{Q}$.
+
+Then $X_t^\varphi = x + \int_0^t \varphi_s dS_s$ is a local Q-martingale.
+\begin{enumerate}
+	\item Supermartingale if bounded from below for utilities on $\mathbb{R}_+$
+	\item Martingale if risky position is sufficiently integrable for utilities on $\mathbb{R}$ (eg, bounded). This implies admissibility.
+\end{enumerate}
+
+In either case, $\mathbb{E}[U(X_T^\varphi)] \leq \mathbb{E}[V(yY_T)] + xy$.
+
+This upper bound is for any trading strategy $\varphi$, any $t$, and any $y$. Candidate is optimal if bound is tight for
+\begin{enumerate}
+	\item $U'(X_t^\varphi) = yY_t$
+	\item $\mathbb{E}[ Y_T (U')^{-1}(yY_T) ] = x$
+\end{enumerate}
+
+For exponential utilities $U(x) = -e^{-\alpha x}$, we get $V(y) = \frac{y}{\alpha} \log \frac{y}{\alpha} - 1$. The second condition gives $y = \alpha \exp (-\alpha x - \mathbb{E}[ Y_T \log Y_T ])$. This yields a simplified upper bound:
+\begin{equation}
+	\mathbb{E} [ -e^{-\alpha X_T^\varphi}] \leq -e^{-\alpha x - \mathbb{E} [ Y_t \log Y_T ]}
+\end{equation}
+
+In complete market with unique $Y_T$, we can verify equality for candidate by direct computation! Sweet!
+
+
+We can do analogous results for power utilities $U(x) = x^{1-\gamma}/ (1-\gamma)$. The conjugate comes out to $V(y) = \frac{\gamma}{1-\gamma} y^{1-1/\gamma}$. Then we look at the expectation, and look at the upper duality bound simplifies.
+
+
+\section{Markets with Transaction Costs}
+Before, we bought and sold at the same price $S_t$. Now, we will buy at the ask price $S_t$ and sell at the bid price $(1-\epsilon)S_t$. (clearly, $\epsilon$ is the width of the relative bid-ask spread.)  We only consider finite variation strategies $\varphi_t = \varphi_t^u - \varphi_t^d$. These track the number of shares bought and sold by time $t$, respectively. Infinite costs otherwise.
+
+We can do integration by parts on the frictionless self-financing condition, which then reads as
+\begin{equation}
+	d\varphi_t^0 = \varphi_t dS_t - d(\varphi_tS_t) = -S_td\varphi_t
+\end{equation}
+The counterpart with transaction costs is
+\begin{equation}
+	d\varphi_t^0  = -S_td\varphi_t^u + (1-\epsilon)S_t d\varphi_t^d.
+\end{equation}
+
+Why is all of this important? Non-trivial spreads are common even in the most liquid markets. Constant position/weight requires infinite turnover, which causes infinite costs, which is not feasible. How can we adapt optimal trading strategies? How much welfare is lost? What are the endogenous spreads in equilibrium between market makers and rebalancing investors? (This is a sort of static game which can determine the bid-ask spread as an output of a model such as: Find a bid-ask spread by examining market maker profit from optimal strategy of traders given a bid-ask spread.) There is also a new difficulty: complex horizon dependence. Do not trade if horizon is close. Way out?
+
+Two alternatives:
+\begin{enumerate}
+	\item We could look at the expected utility of the final value of our portfolio:
+	\begin{equation}
+		\mathbb{E}[U(X_T)]
+	\end{equation}
+	but this is a bit fishy...
+	
+	\item Another option is to look at
+	\begin{equation}
+		\mathbb{E}[ \int_0^\infty e^{-\beta t} U(c_t)dt ] 
+	\end{equation}
+	which is good, except that it is basically intractible.
+\end{enumerate}
+
+So, as before, we'll consider the exponential utility $U(x) = -e^{-\alpha x}$ or power utility $U(x) = \frac{x^{1-\gamma}}{1-\gamma}$. 
+But infinite horion to reduce stationary problem:
+	For exponential utilities, we maximize the equivalent annuity:
+	\begin{equation}
+		\limsup_{T\to \infty} - \frac{1}{\alpha T} \log \mathbb{E}\left[e^{-\alpha X_T^\varphi} \right] \to \max!
+	\end{equation}
+	
+	For power utilities, we maximize the equivalent safe rate:
+	\begin{equation}
+		\limsup_{T\to \infty} \frac{1}{(1-\gamma) T} \log \mathbb{E}\left[ (X^\varphi_T)^{1-\gamma} \right] \to \max!
+	\end{equation}
+
+This keeps scaling properties in the weath, and also gets rid of the horizon dependence.
+
+Open questions: What are the control heuristics? How can we verify it?
+
+
 
 
