@@ -132,7 +132,7 @@ What are the weaknesses here?
 	\end{equation}
 	which is an exponential ornstein uhlenbeck process. It gives
 	\begin{equation}
-		\log S_t \sim N( (\log S_t) e^{-\alpha(T-t)} + \tilde{\mu}(1-e^{-\alpha(T-t)}) ,  \frac{\sigma^2}{2\alpha} (1-e^{-2\alpha(T-t)}))
+		\log S_t \sim N( (\log S_0) e^{-\alpha(T-t)} + \tilde{\mu}(1-e^{-\alpha(T-t)}) ,  \frac{\sigma^2}{2\alpha} (1-e^{-2\alpha(T-t)}))
 	\end{equation}
 	We can apply Ito to $y_te^{\alpha t}$. So it is easy to find $F(t,T)$:
 	\begin{equation}
@@ -141,7 +141,7 @@ What are the weaknesses here?
 	
 	Then apply Ito to $F_t$ to see
 	\begin{equation}
-		\frac{F(t,T)}{F(t,T)} = \sigma e^{-\alpha(T-t)}dW_t
+		\frac{dF(t,T)}{F(t,T)} = \sigma e^{-\alpha(T-t)}dW_t
 	\end{equation}
 	
 	Weaknesses: Volatility of long forwards is underestimated. Also all forwards are perfectly correlated.
@@ -266,3 +266,162 @@ How can we estimate the volatility functions? 1) From historical returns, we do 
 	\frac{d F(t,T)}{F(t,T)} = \sum_{i=1}^N v_i(t) \sigma_i(T) e^{-\alpha_i (T-t)}dW_t^{(i)}
 \end{equation}
 where the terms$ v_i(t), \sigma_i(T)$, and $e^{-\alpha_i (T-t)}$ represent the affect of the whole curve, maturity specific, and steepness of the vol term structure. (That is, a Gaussian Exponential Factor Model.)
+
+
+\chapter{Commodities - Day 3}
+Recall the general forward curve model
+\begin{equation}
+	\frac{dF(t,T)}{F(t,T)} = \sum_{i=1}^N \sigma_i(t,T)dW_t^{(i)}
+\end{equation}
+
+\section{Option Pricing}
+Most commodity markets options traded on futures, not spot, and maturity just before the future's maturity.
+That gives three critical times:
+\begin{enumerate}
+	\item $t$: current time
+	\item $T_1$: option maturity
+	\item $T_2$: forward maturity
+\end{enumerate}
+The price we want is the
+\begin{equation}
+	V_t = \exp(-r(T_1-t)) \mathbb{E}^Q_t \left[ (F(T_1,T_2) - K)^+ \right]
+\end{equation}
+
+We can use {\emph Black's Formula} on any lognormal $\mathbb{E}\left[ (e^x-K)^+ \right]$ and $x \sim N(\mu_x, \sigma_x^2)$. 
+Many people are familiar doing something like
+\begin{equation}
+	= \sum_{\log \frac{K-\mu_x}{\sigma_x}} (e^{\mu_x + \sigma_x x} - K)\frac{1}{\sqrt{2\pi}} e^{-\frac12 x^2}dx
+\end{equation}
+ad after a few lines we get
+\begin{equation}
+	= e^{\mu_x + \frac12 \sigma_x^2} \Phi\left( \frac{\mu_x + \sigma_x^2 - \log K}{\sigma_x}\right)
+			- K \Phi\left(\frac{\mu_x - \log K}{\sigma_x}\right)
+\end{equation}
+But we have that
+\begin{equation}
+	\mu_x = \mathbb{E}^Q [\log (F(T_1,T_2))] = \log(F(t,T_2)) - \frac12 \sigma_x^2
+\end{equation}
+\begin{equation}
+	\mathcal{E}_t^Q \left[ F(T_1,T_2) \right] = F(t,T_2) = e^{\mu_x + \frac12 \sigma_x^2}
+\end{equation}
+Hence, we have
+\begin{equation}
+	V_t = e^{-r(T_1-t)} \left[ F(t,T_2)\Phi(d_+) - k\Phi(d_-) \right]
+\end{equation}
+where $d_\pm = \frac{\log (F(t,T_2)/K) \pm \sigma_x^2}{\sigma_x}$ and $\sigma_x^2 = \texttt{Var}^Q\left[ \log F(T_1,T_2)\right]$.
+
+Fine. Now the general forward model is
+\begin{equation}
+	\log F(T_1,T_2) \sim \mathcal{N}(
+	\log F(t,T_2) - \frac12 \sum_{i=1}^N \int_t^{T_1} \sigma_i^2(u,T_2)du
+	,
+	\sum_{i=1}^N \int_t^{T_1} \sigma_i^2(u,T_2)du
+	)
+\end{equation}
+We just need to integrate the squared forward vol over the life of the option. For example, the Schwartz 1-factor model gives
+\begin{equation}
+	\sigma_x^2 = \int_{t}^{T_1} (\sigma e^{-\alpha (T_2-u)})^2du
+		   = \frac{\sigma^2}{2\alpha} \left( e^{-2\alpha(T_2-T_1)} - e^{-2\alpha(T_2-t)} \right)
+\end{equation}
+
+Plot vs maturity: Exponential decay from $T_2-T_1$ until $T_2-t$. (Or, alternatively, integrating the exponential increase from $t$ to $T_1$ (and avoiding $T_1$ to $T_2$)).
+
+\section{Spread Options}
+General spread option payoff at time $T$ has the form
+\begin{equation}
+	(a X_T - bY_T - K)^+
+\end{equation}
+where $X_T$ and $Y_T$ are different commodity prices (spot or forward):
+\begin{enumerate}
+	\item Input/Output (e.g. `dark' if between electricity/coal, `spark')
+	\item Input/Output (e.g. `crack' if between refined product, crude)
+	\item Calendar (e.g. Dec13 Forward vs Jun13 forward) (storage)
+	\item Locational (e.g. Henry Hub vs NorthEast gas) (transport)
+\end{enumerate}
+Spread options are critically important, due to the strong link with physical assets--they are useful as hedging and valuation tools.
+There are some tricky aspects here, because these reflect optimal(unconstrained) operation, which is not usually available.
+
+\subsection{Classical Spread Option Pricing}
+Margrabe proposed:
+\begin{align}
+	dS_t^{(1)} =& rS_t^{(1)}dt + \sigma_1 S_t^{(1)} dW_t\\
+	dS_t^{(2)} =& rS_t^{(2)}dt + \sigma_2 S_t^{(2)} dW_t\\
+	dS_t^{(1)} dS_t^{(2)} =& \rho dt
+\end{align}
+which are correlated geometric brownian motions.
+
+
+\subsection{Power Plants}
+We can approximate a power plant value via a string of spread options
+\begin{equation}
+	\text{Plant Value} \approx \sum_{j\in J} \exp(-rT_j) \mathbb{E}^Q \left[ (P_{T_j}- h_gG_{T_j} - e_g A_{T_j} - K)^+ \right]
+\end{equation}
+The main challenge is to capture the multi-commodity dependence structure and the link with demand in a mathematically tractable model.
+
+Main approaches:
+\begin{enumerate}
+	\item Reduced-Form: Correlated Lognormals, etc (Carmona \& Durrleman)
+	\item Full Fundamental: Via production cost optimization problem
+	\item Structurally: Embedded into a model for spot power:
+	\begin{equation}
+		\text{Power} = f(\text{gas}, \text{coal}, \text{carbon}, ...)
+	\end{equation}
+\end{enumerate}
+
+Some issues using Margrabe for power valuation:
+\begin{enumerate}
+	\item prices negative
+	\item not brownian motion
+	\item etc...
+\end{enumerate}
+
+\subsection{Electricity Markets}
+Main point: Electricity is not storable, so we require hourly matching of supply and demand for market clearing. The price varies widely across different locations and is 
+
+Huge huge huge spikes. The prices might even go negative. Some pretty weird markets, because of subsidies, etc.
+
+We'll focus on the correlation between natural gas and electricity.
+
+\subsection{Structural Models for Power}
+We're shooting for a middle ground which lets us use forward-looking models and soforth. Also, using historical data is problematic.
+\begin{enumerate}
+	\item Demand $D_t$: Barlow (2002)
+	\item Capacity $\xi_t$: Burger et all(2004), Cartea et al (2007)
+	\item Fuel Prices $G_t$: Pirrong and Jermakyan(2005) , Aid (2011)
+\end{enumerate}
+
+\subsection{Bid Stack function}
+Day-ahead generator bids arranged by price to form the bid stack. The spot price $P_t$ is highest bid needed to match inelastic demand $D_t$. The merit order of production costs drives the dynamics of the stack.
+
+We can model some of these ideas which capture
+
+We can get some closed form solutions via the assumption of an exponential bid stack.
+
+A better way is to look at the power price vs gas price curves.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

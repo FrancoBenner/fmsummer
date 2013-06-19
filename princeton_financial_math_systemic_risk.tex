@@ -335,3 +335,186 @@ If we take $\rho=0$ for a second, then
 \begin{equation}
 	\bar{x}_T \sim \frac{\sigma}{\sqrt{N}}\tilde{W}_t
 \end{equation}
+
+
+\chapter{Systemic Risk Day 3}
+We will continue considering the equation governing the log-capitalization of the banks
+\begin{equation}
+	dX_t^i = \frac{a}{N} \sum_{j=1}^N (x_t^j - x_t^i)dt + \sigma (\rho dW_t^0 + \sqrt{1-\rho^2} dW_t^i)
+\end{equation}
+where $W^0$, ..., $W^N$ are independent brownian motions and $a$ represents the speed of trading. We can further consider the mean over all these,
+\begin{equation}
+	\bar{X}_t = \frac{1}{N} \sum_{i=1}^N X_t^i
+\end{equation}
+which lets us write as
+\begin{equation}
+	d X_t^i = a (\bar{X}_t - X_t^i)dt + \text{Noise}
+\end{equation}
+where the mean is governed by
+\begin{equation}
+	d\bar{X}_t = \sigma\rho dW_t^0 + \frac{\sigma \sqrt{1-\rho^2}}{N}\sum_{i=1}^N dW_t^i
+\end{equation}
+Which is equivalent to [ed: is this true?]
+\begin{equation}
+	= \sigma \sqrt{\rho^2 - \frac{1-\rho^2}{N}}dB_t
+\end{equation}
+This gives rise to a flocking behavior--all the banks will follow the mean--at least as long as the mean is large.
+
+Consider the case where $\rho=0$ which gives
+\begin{equation}
+	\frac{\sigma}{\sqrt{N}}dB_t.
+\end{equation}
+We will count a bank as defaulting when it hits some default amount $D<0$. We can consider the event
+\begin{equation}
+	\left\{ \min_{0\leq t \leq T} \bar{X}_t < D \right\}
+\end{equation}
+And in particular, we can calculate the probability of default,
+\begin{equation}
+	\mathbb{P}(\min_{0\leq t \leq T} \bar{X}_t < D) 
+	= \mathbb{P}(\tau \leq t) 
+	= 2\mathcal{N}(\frac{D\sqrt{N}}{\sigma\sqrt{T}})
+	\sim e^{-\frac{D^2 N}{\sigma^2 T}}
+\end{equation}
+
+Another interesting regime: $\rho=0$. Then
+\begin{equation}
+	\bar{X}_t \sim \sigma \rho W_t^0
+\end{equation}
+and
+\begin{equation}
+	\mathbb{P}(\bar{\tau} \leq t) = 2 \mathcal{N}(\frac{D}{\sigma \rho \sqrt{T}})
+\end{equation}
+But this actually isn't too interesting.
+
+Another one: $N\to \infty$ with $\rho=0$. We must be very careful here--taking $N\to\infty$ completely misses the systemic risk. That is because $\bar{X_t}\to 0$. But we could consider $N\to\infty$ but then reconsider with $N$ large but finite later. In this case, the $(X_t^i)$ become OUs, which are independent.  Then
+\begin{equation}
+	d X_t^i = -a X_t^i + \sigma dW_t^i
+\end{equation}
+and we need to find the hitting time of an OU(which is annoying, but possible).
+
+
+\section{Other models}
+\subsection{Garnier - Papanicolaou - Wang}
+Here, we replace the hitting times with a double well potential.
+
+That is, we create a double-well potential: $V(x) = a x^4 + b x^2$ (with $a>0$, $b<0$). Then the equation becomes
+\begin{equation}
+	dX_t^i = h V'(X_t^i) dt + a \sum_{j=1}^N (X_t^i - X_t^j) dt + \sigma dW^i_t
+\end{equation}
+
+
+\section{Games}
+Work done with Carmona and Sun. We want the bank to be able to do something. To start, consider
+\begin{equation}
+	dX_t^i = \frac{a}{N} \sum_{j=1}^N (X_t^j - X_t^i)dt + \alpha_t^i dt + \text{Noise}
+\end{equation}
+Now to prevent the bank from borrowing infinite money, we must introduce a cost:
+\begin{equation}
+	J^i = \sum_{0}^T \frac{(\alpha_i^t)^2}{2} dt
+\end{equation}
+where we would of course minimize $J^i$. But now of course we must include an incentive--otherwise, we would just never borrow. So we modify to
+\begin{equation}
+	J^i = \sum_{0}^T (\frac{(\alpha_i^t)^2}{2} - q \alpha_t^i(\bar{X}_t - X_t^i) )dt
+\end{equation}
+But we would also like a convex optimization problem, so we change to
+\begin{equation}
+	J^i = \sum_{0}^T (\frac{(\alpha_i^t)^2}{2} - q \alpha_t^i(\bar{X}_t - X_t^i) + \frac{\epsilon}{2}(\bar{X}_t - X_t^i)^2)dt
+\end{equation}
+(We can think of this as a regulator imposing some extra cost if we get too far from the mean.) Finally, we would like to include some other cost at the very end, and also take the expectation, which gives:
+\begin{equation}
+	J^i = \mathbb{E} \left\{ \sum_{0}^T (\frac{(\alpha_i^t)^2}{2} - q \alpha_t^i(\bar{X}_t - X_t^i) + \frac{\epsilon}{2}(\bar{X}_t - X_t^i)^2)dt + \frac{c}{2}(\bar{X}_T - X_T^i)^2 \right\}
+\end{equation}
+We can not take $\epsilon$ too small, we must have $\epsilon \geq q^2$.
+
+This looks like a Mean Field Game(MFG), pioneered Lions-Lasry for the $N\to\infty$ case. This is interesting--we pass to the limit to get an easier problem. Another approach is from Carmona-Delarue. But it turns out that we can solve this game for $N$ finite, via a dynamic programming approach.
+
+We start with $\alpha_t^i = \phi^i(t,X_t)$. The dynamic programming approach means also introducing the quantities
+\begin{equation}
+	V^i(t,x) = \min \mathbb{E}_x \left( \int_t^T --\text{as above}-- + (\text{terminal cond}) | \mathcal{F}_t \right)
+\end{equation}
+
+This is governed by the Hamilton-Jacobi-Bellman (?) equation:
+\begin{equation}
+	\int \left\{ \partial_T V^i + \sum_{j=1}^N (a (\bar{x}-x^j)+ \alpha^i)\partial_{x_j}V^i 
+	+
+	\frac{\sigma^2}{2} \sum_j \sum_k \left( \rho^2 + (1-\rho)^2 \delta_{j,k}\right)
+	+
+	\frac{(\alpha^i)^2}{2} 
+	- 
+	q\alpha^i (\bar{x}-x^i) 
+	+ 
+	\frac{\epsilon}{2}(\bar{x}-x^i)^2
+	\right\} = 0
+\end{equation}
+[Ed: there was a random $\partial_{x^j, x^k}V^i$ floating around here.. I think it goes after the $\delta_{jk})$ part?]
+Also $\delta_{jk}$ is the Kronecker delta.
+Because we want the infimum, we just take the gradient. And we want it with respect to $\alpha^i$ so
+\begin{equation}
+	\partial_{x^i} V^i + \alpha^i - q(\bar{\alpha} - x^i) = 0
+	\implies
+	\hat{\alpha}^i = -\partial_{x^i} V^i + q(\bar{\alpha} - x^i), \qquad i=1,..,N
+\end{equation}
+But this assumes that we know $V^i$, which we do not! So next we consider
+\begin{equation}
+	\partial_t V^i + \sum_{j=1}^N \left[ 
+	(a + q)(\bar{x}- x^j) - \partial_{x_j} V^j
+	\right] \partial_{x^j}V^i
+	+
+	\frac{\sigma^2}{2} \sum_j\sum_k \left[
+	 \rho^2 + (1-\rho^2)\delta_{jk}
+	\right]\partial_{x^j x^k} V^i
+	+ \frac12(\epsilon-q^2)(\bar{x}-x^i)^2 + \frac12 (\partial_{x^i} V^i)^2
+\end{equation}
+
+We'll try an Ansatz here:
+\begin{equation}
+	V^i(t, x) = \frac{\varphi_t}{2} (\bar{x}-x^i)^2 + \mu_t
+\end{equation}
+and impose that
+\begin{equation}
+	V^i(T,x) \to \varphi_T = C, \mu_T = 0
+\end{equation}
+which gives
+\begin{equation}
+	\partial_{x^j} V^i = \varphi_t(\frac{1}{N} \delta_{ij}) (\bar{x} - x^i)
+\end{equation}
+and
+\begin{equation}
+	\partial_{x^j, x^k} V^i_t = \varphi_t (\frac{1}{N} - \delta_{ij})(\frac{1}{N} - \delta_{ik})
+\end{equation}
+which gives
+\begin{align}
+	\varphi_t' =& 2(a+q) \varphi_t + (1-\frac{1}{N^2})\varphi_t^2 - (\epsilon - q^2), \qquad \varphi_T = C\\
+	\mu_t' =& -\sigma^2(1-\rho^2)(1-\frac{1}{N})\varphi_t, \qquad \mu_T = 0
+\end{align}
+which are x-independent terms! Hooray!
+
+Let's solve it:
+\begin{equation}
+	\varphi_t = \frac{-(\epsilon - q^2)(\exp(\Delta(T-t)) - 1) - C(\delta^+ \exp(\Delta(T-t)) - \delta^-)}
+			 {(\delta^-\exp(\Delta(T-t)) - \delta^+ ) - C(1 - \frac{1}{N^2})(\exp(\Delta(T-t))-1)}
+\end{equation}
+where
+\begin{align}
+	\Delta =& \delta^+ - \delta^-\\
+	\delta^\pm =& -(a+q) \pm \sqrt{R}\\
+	R =& (a+q)^2 + (1 - \frac{1}{N^2})(\epsilon - q^2) > 0
+\end{align}
+
+Where are we at here? First, we have
+\begin{equation}
+	\hat{\alpha}_t^i = (q + (1 + \frac{1}{N})\varphi_t)(\bar{X} - X_t^i)
+\end{equation}
+and also
+\begin{equation}
+	dX^i_t = \frac{a}{N} \sum_{j=1}^N (X_t^j - X_t^i)dt + ( \text{above...} )dt + \text{Noise}
+\end{equation}
+
+[ed] I missed one here.
+
+Could do $T\to \infty$ because the terminal time is annoying. One option is to take $c=0$, and optimizing $\frac{1}{T}J_T^i$. Taking $T\to\infty$ mean the effective rate of borrowing and lending is
+\begin{equation}
+	\frac{-(\epsilon - q^2)}{\delta^-}
+\end{equation}
+
+We could also take $N\to\infty$, but this will be on Friday. Tomorrow will be a different approach and compare the two.
