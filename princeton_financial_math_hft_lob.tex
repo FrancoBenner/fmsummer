@@ -221,8 +221,8 @@ where $U$ is a utility function and $\mathbb{E}$ is the expectation over a model
 
 This is a prohibitively large-dimensional model.
 
-\section{HUGE SECTION}
-here was the end of the first lecture...
+\chapter{High-Frequency Trading \& Limit Order Book 2 - Carmona\\ Price Impact Models \& Optimal Execution}
+%%% start of 2013-06-18 parts
 \section{queries}
 We already saw that we should split and spread large orders, so:
 \begin{enumerate}
@@ -256,3 +256,141 @@ The problem is: we want find a deterministic continuous transaction path to maxi
 This is widely used within the industry.
 
 \subsection{Criticisms}
+%%% end of 2013-06-18 parts
+\begin{enumerate}
+	\item Mid price $P_t^{mid}$ is arithmetic brownian motion with drift... so we can see negative prices, reasonable only for short times, maybe that price never actually happens.
+	
+	\item Are there issues with rate of trading in continuous time?
+	
+	\item Price impact is more complex than instantaneous and permanent. 
+	
+	\item 
+	
+	\item Empirical evidence that it is stochastic.
+\end{enumerate}
+
+\subsection{Optimal Execution}
+An execution algorithm has three layers:
+\begin{enumerate}
+	\item Highest: How to slice the order, when to trade, what size, how long?
+	\item Mid: Given a slice, market or limit order? What price level?
+	\item Low: Given an order, which venue? (we will ignore this!)
+\end{enumerate}
+
+Set-up:
+{bf goal: } sell $x_0>0$ shares by time $T>0$.
+\begin{enumerate}
+	\item $\underbar{X} = (X_t)_{0\leq t \leq T}$ execution strategy
+	\item $X_t$: position (the number of shares held) at time $t$
+	\item Assume $X_t$ is absolute continuous (to get differentiability)
+	\item Take $\tilde{P}_t$ the mid-price(unaffected price), $P_t$ transaction price, and $I_t$ is the price impact; that is:
+	\begin{equation}
+		P_t = \tilde{P}_t + I_t
+	\end{equation}
+	(for example, with the Linear Impact Amlgren-Chriss model:
+	\begin{equation}
+		I_t = \gamma [X_t - X_0] + \lambda \dot{X}_t).
+	\end{equation}
+\end{enumerate}
+
+Our objective is to maximize some form of revnue at time $T$, with revenue $\mathcal{R}(\underbar{X})$ from the execution strategy $\underbar{X}$
+\begin{equation}
+	\mathcal{R}(\underbar{X}) = \int_0^T (-\dot{X}_t)P_t) dt
+\end{equation}
+
+
+\section{Challenges}
+The first generation considered price impact models: Risk neutral framework, more complex portfolios (eg, with options), or robustness and performance constraints(e.g. slippage or tracking market VWAP).
+
+The second generation uses simplified LOB models, for example a simple liquidation problem or performance constraints and using both market and limit orders.
+
+\section{Optimal Execution}
+First we can expand on the definition
+\begin{align}
+	\mathcal{R}(\underbar{X}) =& \int_0^T (-\dot{X}_t)P_t) dt\\
+	=& -\int_0^T \dot{X}_t\tilde{P}_tdt - \int_0^T \dot{X}_tI_t dt\\
+	=& x_0\tilde{P}_0 + \int_0^T X_t d\tilde{P}_t - C(\underbar{x})
+\end{align}
+where
+\begin{equation}
+	C(\underbar{x}) = 
+\end{equation}
+
+Can try to maximize expected revenue, but get a boring answer.
+
+A better way is instead to maximize:
+\begin{equation}
+	\mathbb{E}\left[ \mathcal{R}(\underbar{X})\right] - \alpha \texttt{var}\left[ \mathcal{R}(X) \right]
+\end{equation}
+Here, $\alpha$ is a risk aversion parameter--late trades carry some volatility risk.
+
+For a DETERMINISTIC trading strategy $\underbar{X}$, we can find the expectation.
+
+
+Instead, we might include risk aversion via a utility function:
+\begin{equation}
+	\max \qquad \mathbb{E}\left[ U(\mathcal{R}(\underbar{X}_T ))\right]
+\end{equation}
+
+
+All of these models have some shortcomings:
+\begin{enumerate}
+	\item they are deterministic
+	\item do not react to price changes
+	\item are time-inconsistent
+	\item counter-intuitive
+\end{enumerate}
+Furthermore, the computations require
+\begin{enumerate}
+	\item solving nonlinear PDEs
+	\item singular terminal conditions.
+\end{enumerate}
+
+\section{Recent Developments}
+\begin{enumerate}
+	\item Gatheral/Schied(2011)
+	\item Schied(2012)
+	\item Almgren-Li (2012): Hedging a large option position. Explicit solution in some gases)
+\end{enumerate}
+Modeling the LOB by a shape function:
+\begin{enumerate}
+	\item Obizhaeva-Wang (2006)
+	\item Alfonsi-Fruth-Schied(2010)
+	\item Alfonsi-Schied-Schulz(2011)
+	\item Predoiu-Shaikhet-Shreve(2011)
+\end{enumerate}
+
+\chapter{Predatory Trading}
+Large traders facing forced liquidation.
+Especially if the need to liquidate is known to other traders. These can be hedge funds with a nearing margin call, or traders who use portfolio insurance, stop loss orders, etc. Some institutions/funds can not hold on to downgrade instruments. Finally, index replication funds at re-balancing dates(for example, the Russell 3000.)
+
+Forced liquidation can be very costly because of price impact.
+
+Collapses: LTCM vs Amaranth
+
+Reference: Cramer 2002.
+
+Goals:
+\begin{enumerate}
+	\item Understand predation
+	\item Illustrate benefit of stealth trading
+	\item Illustrate benefit of sunshine trading
+\end{enumerate}
+
+The two extremes are:
+\begin{enumerate}
+	\item Elastic: temporary impact dominates
+	\item Plastic: Permanent impact dominates
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+
+
