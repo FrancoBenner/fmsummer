@@ -518,3 +518,236 @@ Could do $T\to \infty$ because the terminal time is annoying. One option is to t
 \end{equation}
 
 We could also take $N\to\infty$, but this will be on Friday. Tomorrow will be a different approach and compare the two.
+
+
+
+\chapter{Systemic Risk Day 4}
+Consider
+\begin{equation}
+	dX_t^i = a(\bar{x}_t-x_t^i)dt + \sigma(\rho dW_t^0 + \sqrt{1-\rho^2}dW_t^i) + \alpha^i dt
+\end{equation}
+for $i=1,..,N$. One way to handle this is the ``open-loop feedback'' approach, which introduces
+\begin{equation}
+	J^i = \mathbb{E}\left\{ \int_0^T (\frac{\alpha^i}{2}) - q \alpha^i(\bar{x}_t-x_t^i) + \sum (\bar{x}_t - x_t^i)^2 )dt  + \frac{c}{2}(\bar{x}_T - x_t)^2 \right\}
+\end{equation}
+Another way is the dynamic programming approach where we introduce $V^i(t,x)$.
+A more different way is the closed loop approach due to Pontugigin (spelling?).
+This is also a Forward-Backward DE approach. It works by introducing a Hamiltonian for each player $i$:
+\begin{equation}
+	H^i(\vec{x}, \vec{y}^i, \vec{\alpha}      )
+	=
+	\sum_{k=1}^N (\alpha(\bar{x} - x^k) + \alpha^k)y^{ik} + \frac{1}{2} (\alpha^i)^2 - q \alpha^i(\bar{x}-x^i) + \frac{\epsilon}{2}(\bar{x}-x^i)^2
+\end{equation}
+Then imposing that for $k\ne i$, we have $\alpha^k = \alpha^k(t,x)$.
+All of this becomes the stochastic differential equations
+\begin{align}
+	dX_i =& \frac{\partial H^i}{\partial y} dt \cdots \\
+	dY_t^{i,j}=& -\frac{\partial H}{\partial x^j} dt + Z_t d\tilde{W}_t
+	Y_T^{i,j} =& C(\bar{x}_T-x^i_T)(\frac{1}{N} - \delta_{ij})
+\end{align}
+So now we must calculate these Hamiltonian parts:
+\begin{equation}
+	\frac{\partial H^i}{\partial x^j} = 
+	 \sum_{k=1}^N \left[ (a+q)(\frac{1}{N} - \delta_{kj} ) \right] y^{ik}
+	 -q\alpha^i(\frac{1}{N} - \delta_{ij})
+	 + \epsilon(\bar{x} - x^i) (\frac{1}{N} - \delta_{ij})
+\end{equation}
+and
+\begin{equation}
+	dY^{ij}_t = -\left[ \sum_{k=1}^N (a+y)(\frac{1}{N} - \delta_{kj})Y_t^{ik} - q\alpha^i(\frac{1}{N} - \delta_{ij}) + \sum (\bar{x}_t - x_t^i)(\frac{1}{N}-\delta_{ij})\right] dt + Z_t dW_t
+\end{equation}
+To solve, we take the anstaz
+\begin{equation}
+	Y_t^{ij} = \eta_t(\frac{1}{N}-\delta_{ij})(\bar{x}_t - x^i_t)
+\end{equation}
+Plug that in, then we get some expression for $dY_t^{ij}$.
+Eventually, we get the differential equation from
+\begin{equation}
+	\eta_t' = 2(a + q)\eta_t + (1-\frac{1}{n^2})\eta_t^2 - (\epsilon - q^2), \quad \eta_T=C
+\end{equation}
+
+Okay, let's switch gears a bit and consider $N\to\infty$. Then $\bar{X}_t \to m_t$ is related to $\mathbb{E}(X^i_t/w^0)$
+Then the one-player model ends up being
+\begin{equation}
+	dX_t = a (m_t - X_t)dt + \alpha_t dt + \sigma(\rho dW_t^0 + \sqrt{1-\rho^2}dW_t)
+\end{equation}
+So we will consider
+\begin{equation}
+	\inf \mathbb{E} \int_0^T \left( \frac{(\alpha_t)^2}{2} - q\alpha_t (m_t - X_t) + \frac{\epsilon}{2}(m_t - X_t)^2\right)dt + (other stuff)
+\end{equation}
+Then the Hamiltonian is
+\begin{equation}
+	H = \left[ \right] y + \frac{\alpha^2}{2} - q\alpha(m_t - x) + \frac{\epsilon}{2}(\mu_t-x)^2
+\end{equation}
+and again we'll set up the hamiltonians
+\begin{align}
+	dX_t = \frac{\partial H}{\partial y} dt + (noise)\qquad X_0=x_0\\
+	dY_t = \frac{\partial H}{\partial x} dt + (noise)\qquad Y_T=(0 or TC)\\
+\end{align}
+Now then, because $\mathbb{E}(m_t - X_t)=0$, we have $\mathbb{E}(Y_t)=0$.
+Using all of that, we can find $\mathbb{E}(X_t)= m_t $ (no surprise)
+Then we get some equation like
+\begin{equation}
+	\alpha_t = - \eta_t X_t dt
+\end{equation}
+(but this equation is wrong, there is a $q$ somewhere)
+
+Two references:
+\begin{enumerate}
+	\item Carmona-Delarue
+	\item Mean Field Games: Lions-Cassry Cassy
+\end{enumerate}
+
+\chapter{Systemic Risk Day 5 \\ ???}
+
+\section{Diversification vs Systemic Risk}
+This will be an endogenous approach.
+
+Consider two stocks $S^1$, $S^2$ which are geometric brownian motions.
+Suppose they have mean growth $\mu$ and random part $\sigma$ and independent $W^1$, $W^2$.
+We'll consider two banks with initial wealth $X^1_0=X^2_0=1$.
+Consider the equations:
+\begin{align}
+	dX^1_t =& \mu X_t^1 dt + \sigma X_t^1 \left[(1-\alpha) dW^1_t  + \alpha dW^2_t \right]\\
+	dX^2_t =& \mu X_t^2 dt + \sigma X_t^2 \left[\alpha dW^1_t  + (1-\alpha) dW^2_t \right]
+\end{align}
+
+Now consider $T>0$ with $\tau^1$, $\tau^2$ and default levels $D^1$, $D^2$. Then
+\begin{equation}
+	U^\alpha (t, x_1, x_2) = P(\tau_1> t, \tau_2 > t)
+\end{equation}
+Then the probability of a systemic event is
+\begin{equation}
+	P(\text{Systemic Event}) = 1+u^\alpha - u^{1,\alpha} - u^{2,\alpha}.
+\end{equation}
+There is a joint distribution of $\tau^1$, $\tau^2$. 
+Then we can find a plot: Put $P(systemic)$ vs $\alpha$(the diversification parameter) The probability looks something like
+\begin{equation}
+	(1-u^1)(1-u^2)
+\end{equation}
+Then it is clear that there is some critical value $\alpha^c$.
+
+Switching gears a bit, it is clear that $u^\alpha(t,x_1,x_2)$ satisfies a PDE:
+\begin{equation}
+	\partial_t u^\alpha  \cdots = 0 + T.C.  + B.C.
+\end{equation}
+(Insert plot: horizontal: $(0,T)$ , $x_1$ from some value to infinity, etc.)
+
+\section{T. Ichibu Paper}
+This is known as Feller's Diffusion (CIR) model:
+\begin{equation}
+	dX_t^i = \delta_i dt + \sum_{j=1}^n (x_t^j - x_t^i) p_{ij}(X_t)dt + 2\sqrt{X_t^i} dW^i_t
+\end{equation}
+with $X_t'$ is the capitalization.
+
+\subsection{Quick review}
+If we have
+\begin{equation}
+	dY^t = (m-Y_t)dt + \nu \sqrt{2 Y_t} dW^t
+\end{equation}
+then if $Y_0=0$ and if $\nu^2 \leq m$ (with $m>0$) then $Y_t>0 \forall t$.
+(That is, the force of the process outweighs the volatility.)
+The nice part of this is that it never hits zero.
+
+We will need to solve an equation $\mathcal{L}u = 0$ of the form
+\begin{equation}
+	(m-y)u' + \nu^2 y u'' = 0
+\end{equation}
+which has a solution of the form
+\begin{equation}
+	u(y) = \int_1^y e^{\frac{z}{\nu^2}} z^{-\frac{m}{\nu^2}}dz
+\end{equation}
+
+Now consider a bound $[\epsilon, M]$. We are interested in the hitting time.
+We can caluclate
+\begin{equation}
+	u(Y_{t \cap \tau}) = u(y) + \int_0^{t\cap \tau} u'(y_s) \nu \sqrt{2Y_s}dW_s
+\end{equation}
+The variance is given by
+\begin{equation}
+	\mathbb{E}( (u(y))^2) = u(y)^2 + \mathbb{E}\int_0^{t\cap \tau} u'(Y_s)^2 \nu^2 2 Y_s ds
+\end{equation}
+Then we have that
+\begin{equation}
+	\mathbb{E}(\tau) < +\infty \implies \tau < \infty \text{almost surely}
+\end{equation}
+Then we can do
+\begin{equation}
+	u(y) = \mathbb{E}(u(_\tau)) = u(\epsilon) P(\epsilon) + u(M)P(M)
+\end{equation}
+Now $u(\epsilon)\to -\infty$ and $P(\epsilon)\to 0$ as $n\to \infty$.
+
+Next, if $\delta_i > 0$ and $P_{ij}$ bounded, regular enoguh, then there exists a solution (According to Bass-Perkins 2003).
+
+We $S_t = \sum_{i=1}^n X_t^i$, and $P_{ij} = P_{ji}$, and we have the equation
+\begin{equation}
+	dS_t= (\sum_{i=1}^n \delta_i)dt + 2 \sum_{i=1}^n \sqrt{X_t} dW_t^i
+\end{equation}
+Equation: $\mathcal{D}$: $2 \sqrt{S_t} dB_t$.
+
+Then we have
+\begin{equation}
+	dS_t = \left(\sum_{i=1}^n \delta_i \right)dt + 0 + 2\sum_{i=1}^n \sqrt{x^i_t} dW^i_t
+\end{equation}
+Which is equivalent to $\sqrt{S_t}dB_t$. Also, define
+\begin{equation}
+	\delta^* = \sum_{i=1}^n \delta_i
+\end{equation}
+
+This gives rise to a square Bessel process: $\delta^*\geq 2$; then $P(\tau < +\infty)=0$. If $\delta^*=2$ still $P(\tau<+\infty)=0$ but also $P(\limsup_t S_t = \infty)=1$ and $P(\inf_t S_t = 0)=1$. Next, consider $0 < \delta^* < 2$; Then $P(\tau<+\infty)=1$ via a reflecting principle. Finally, if $\delta^*=0$, then $0$ is absorbing.
+
+\section{Multiple Defaults}
+If for $(\ell_1,...,\ell_k) \subset \{ 1,2,..., n \}$,
+\begin{equation}
+	\sup_x \left|x_{\ell_i} - x_j \right| p_{\ell_i, j}(x) < 2c_0 = \frac{1}{h(h-1)} \left(2 - \sum_{i=1}^h \delta_{\ell_i} \right) 
+\end{equation}
+then we have that
+\begin{equation}
+	P(\exists t < +\infty s.t. X_t^{\ell 1}=...=X_t^{\ell_h}=0) = 1
+\end{equation}
+Can also show the converse.
+
+We can show $P_{ij}=\frac{1}{n}$. We can then consider the mean field model:
+\begin{equation}
+	dX_t^i = \left( \delta_i + m - x_t^i \right) dt + 2 \sqrt{X_t^i }dW_t^i
+\end{equation}
+where
+\begin{equation}
+	\lim_{n\to \infty} \frac{1}{n} \sum_{i=1}^n X_0^i 
+\end{equation}
+
+Next, we could consider the health of a group of banks:
+\begin{equation}
+	\sum_{j=1}^n \sum_{i=1}^k \left( X_t^i - X_t^k \right)p_{k, j} (X_t)
+\end{equation}
+
+We could also create networks: Create a link between $i$ and $j$ if there is a certain amount of flow. Now we have a graph by looking at these quantities.
+Then we can start asking questions about the size of the system, path lengths between banks, statistics of the system, etc.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -399,14 +399,92 @@ We can get some closed form solutions via the assumption of an exponential bid s
 
 A better way is to look at the power price vs gas price curves.
 
+\chapter{Commodities \& Energy Markets 4 \\ Inventory and Implications for Valuation : Glen Swindle}
+\section{Main Themes}
+\begin{enumerate}
+	\item Liquidity vs Dimensionality: Liquidity is concentrated in benchmarks. Risk can be spread over hundreds of locations and many delivery months. Price decoupling (specialness) occurs routinely. (Dodd-Frank)
+	
+	\item Covariance Structures vs Options Markets: The term structure of volatility and correlation is nontrivial. Liquidity in options is concentrated in vanilla products with mechanics with limit information about (limit utility as hedges of)
+	
+	\item Broad ranges of time scales: Price dynamics exhibits structure over years (``infrared'') to hours (``ultraviolet'')
+	
+	\item Uncommoditized risks
+\end{enumerate}
 
+Carry formalism
+The forward curves can be viewed as yield curves. We can do the forward yield via
+\begin{equation}
+	y(t,T,T+S) = \frac{1}{S} \log \left[ \frac{f(t,T+S)}{f(T,T)}\right]
+\end{equation}
+Key points:
+\begin{enumerate}
+	\item All the you can get from market data is $q-\eta$
+	\item The cost of storage is not exogenous. Storage owners will charge what the market will bear.
+\end{enumerate}
 
+One approach: Fit a fourier series, then look at the residual. 
 
+Storage: Types of storage: Aquifer storage, reservoir, salt caverns, Actually $8.7$ tcf of storage, but 4.2 tcf is base gas--can't get it back out.
 
+Dynamic Optimization:
+\begin{equation}
+	V[0,S(0),F(0,\cdot)] = \sup_{s(\cdot)\in \mathcal{A}} \mathbb{E} \{ \int_0^{T_*} d(0,t)\left[ -s(t)F(t,t) - \kappa(s(t), S(t), F(t,t))\right] dt \}
+\end{equation}
+\begin{enumerate}
+	\item $d$ and $F$ are discount factor
+	\item $S$ is the current inventory level, $s = S'$
+	\item $\kappa$ denotes costs associated with injection and withdrawal. Eg: $\kappa = k|s(t)|F(t,t)$
+	\item $\mathcal{A}$  denotes allowed controls
+\end{enumerate}
+This is a super hard problem.
 
+Let's figure out a calendar spread option: time spread option. Consider options with the following payoff
+\begin{equation}
+	\max \left[ F(\tau, T+U) + e^{rU}F(\tau, T), 0\right]
+\end{equation}
 
+\chapter{Commodities \& Energy : Day 5 \\ Non Standard Expiry}
+Vanilla options markets in commodities always have expiration dates very near the delivery.
+Options structures arise in which expiration varies substantially from the standard market convention. 
+Modeling/estimation is required to infer implied vols over nonstandard time interval from vanilla implied vols.
+Examples:
+\begin{enumerate}
+	\item CSOs
+	\item Price holds (one type: Swaptions)
+	\item Options on ETFs
+	\begin{enumerate}
+		\item These involve the vol of the current nearby, which requires inference from term vols for each contract to the vol pertinent to the time when the contract is active in the index.
+		\item Recursive dynamics of $V_t$ is due to the contract rolls:
+		\begin{equation}
+			V_t = \left[\prod_{n=1}^{N(t)} \frac{F(T_n, T_n)}{F(T_n, T_{n+1})}  \right] F(t,T_{n+1})
+		\end{equation}
+	\end{enumerate}
+\end{enumerate}
 
+Working problem: On 18Feb2009 you are asked by the sales desk to price WTI Dec11 at-the-money European straddles with expiration on 17Dec2009. This is the simplest incarnation of nonstandard expiration. Most occurences are much more complex.
 
+What you know: Dec11 is a liquid contract with standard options expiration date 16Nov2011. NYMEX options market are visible on this horizon.
+
+\subsection{Non-Stationarity}
+Empirical analysis of price dynamics in commodities constantly is encumbered by a technical annoyance: contracts expire.
+
+Two basic approaches:
+\begin{enumerate}
+	\item Construct rolling nearby series; 
+	\item construct constant-maturity forwards.
+\end{enumerate}
+
+Two methods:
+\begin{enumerate}
+	\item Nearby contracts refer to a sequence of live contracts (1st nearby is first, second nearby is next live contract)
+	\item Constant maturity.
+\end{enumerate}
+
+Keypoint: Do analysis on concatenated RETURNS not prices.
+
+\section{Volatility Backwardation}
+% Samuelson effect in the spirit of assigning a proper noun to every observable thing.
+Volatility backwardates.
 
 
 

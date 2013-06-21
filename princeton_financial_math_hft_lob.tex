@@ -221,7 +221,7 @@ where $U$ is a utility function and $\mathbb{E}$ is the expectation over a model
 
 This is a prohibitively large-dimensional model.
 
-\chapter{High-Frequency Trading \& Limit Order Book 2 - Carmona\\ Price Impact Models \& Optimal Execution}
+\chapter{High-Frequency Trading \& Limit Order Book 3 - Carmona\\ Price Impact Models \& Optimal Execution}
 %%% start of 2013-06-18 parts
 \section{queries}
 We already saw that we should split and spread large orders, so:
@@ -360,7 +360,7 @@ Modeling the LOB by a shape function:
 	\item Predoiu-Shaikhet-Shreve(2011)
 \end{enumerate}
 
-\chapter{Predatory Trading}
+\chapter{High-Frequency Trading \& Limit Order Book 4 - Carmona\\Predatory Trading}
 Large traders facing forced liquidation.
 Especially if the need to liquidate is known to other traders. These can be hedge funds with a nearing margin call, or traders who use portfolio insurance, stop loss orders, etc. Some institutions/funds can not hold on to downgrade instruments. Finally, index replication funds at re-balancing dates(for example, the Russell 3000.)
 
@@ -382,6 +382,11 @@ The two extremes are:
 	\item Elastic: temporary impact dominates
 	\item Plastic: Permanent impact dominates
 \end{enumerate}
+
+
+Optimization problem needs a model of the dynamics of the order books. We will model it as poisson.
+
+
 
 
 

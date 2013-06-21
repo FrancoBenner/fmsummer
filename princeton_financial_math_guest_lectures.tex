@@ -1,0 +1,206 @@
+\chapter{Risk Measures - Rudloff}
+Overview:
+\begin{enumerate}
+	\item Risk measures: Primal representation, acceptance sets, dual representation, examples
+	\item Generalizations: Multivariate risks 
+\end{enumerate}
+
+Basics:
+We define a probability space $(\Omega,\mathcal{F}, P)$ (the sample space, $\sigma$-algebra, and probability measure, respectively).
+Random variables map the probability space to real numbers.
+
+Risk measures are mathematical models to quantify uncertainy. It is a functional on the space $L_p(\Omega,\mathcal{F}, P)$ with $p\in[0,\infty]$ (or subspaces of random variables):
+\begin{equation}
+	\rho : L^p \mapsto R\cup \{+\infty \}
+\end{equation} 
+The values will be real numbers, in USD or Euros, etc.
+
+Interpretation: The higher $\rho(X)$, the higher the risk.
+
+There are many different risk measures. There is not one absolutely objective risk measure. Key questions:
+\begin{enumerate}
+	\item Which properties a function $\rho$ should have to be a reasonable risk measure?
+	\item Which random variables are acceptable for a rm $\rho$?
+	\item 
+\end{enumerate}
+
+Some features:
+\begin{enumerate}
+	\item R0:Normalization: $\rho(0)=0$.
+	\item R1:Monotonicity $X_1,X_2\in L^p$: $X_1\geq X_2$ $\implies$ $\rho(X_1)\leq \rho(X_2)$.
+	\item R2:Translation properties (Cash invariance) $X\in L^p$, $c\in\mathbb{R}$, $\implies$, $\rho(X+c)=\rho(X)-c$.
+	
+\end{enumerate}
+
+Extra features:
+\begin{enumerate}
+	\item R3: Convexity in $\rho$
+	\item R0-R3: Convex Risk Measure
+	\item R4: Positive Homogeneity (scaling property)
+	\item R0-R4: Coherent Risk Measure
+\end{enumerate}
+
+Value-At-Risk is a typical Risk Measure, but it is not convex!
+
+\section{Acceptance Sets}
+We call $A_\rho:=\{ X \in L^p: \rho(X) \leq 0$ the acceptance set of the risk measure $\rho$.
+\begin{lemma}\label{lem:rudloff_lemma1}
+	Consider a function $\rho$: $L^p\mapsto \mathbb{R}\cup\{+\infty\}$. It holds:
+	\begin{enumerate}
+		\item $\rho$ monotone $\implies A_\rho + L^p_+$ subset of $A_p$
+		\item $\rho$ convex implies $A_\rho$ convex
+		\item $\rho$ positively homogeneous implies $A_\rho$ is a cone.
+		\item $\rho$ closed implies $A_\rho$ is closed.
+	\end{enumerate}
+	
+\end{lemma}
+
+Reminder: A function $F$ is called closed (or lower semicontinuous) if \begin{equation}
+	\texttt{epi} f := \{ (v,r) \in L^p \times \mathbb{R}: f(v) \leq r \} \subseteq L^p\times \mathbb{R}
+\end{equation}
+is closed in $L^p\times \mathbb{R}$.
+
+Can we construct a risk measure from a given set of acceptable positions?
+\begin{lemma}\label{lem:rudloff_lemma2}
+	Consider a set $A\subseteq L^p$. Define
+	\begin{equation}
+		\rho_A(X) := \inf \{ t \in \mathbb{R}: X + t \in A \}
+	\end{equation}
+	It holds
+	\begin{enumerate}
+		\item $\inf \{ t \in \mathbb{R} : t \in A\} = 0 \implies \rho_A(0) =0 $
+		\item $A+ L_+^p \subseteq A \implies \rho_A$ monotone.
+		\item $\rho_A$ satisfies the translation property.
+		\item $A$ convex $\implies \rho_A$ convex
+		\item $A$ a cone $\implies \rho_A$ is positively homogeneous
+		\item $A$ closed $\implies \rho_A$ closed.
+	\end{enumerate}
+\end{lemma}
+
+\begin{lemma}\label{lem:rudloff_lemma3}
+	There is a one-to-one relationship between lower semicontinuous risk measures and closed acceptance sets via
+	\begin{enumerate}
+		\item $A=\{ X \in L^p: \rho(X) \leq 0 \}$ and
+		\item $\rho(X) = \inf \{ t\in\mathbb{R}: X + t \in A \}$.
+	\end{enumerate}
+\end{lemma}
+
+\begin{theorem}\label{thm:rudloff_dual}
+	A function $\rho: L^p \mapsto \mathbb{R}\cup \{+\inf\}$ is l.s.c. convex risk measure $\iff \exists$ a represetnation of the form
+	\begin{equation}
+		\rho(X) = \sum_{Q \in \mathbb{Q}} \{ \mathbb{E}^Q[-X] - \alpha(Q) \}
+	\end{equation}
+	where $\mathbb{Q}:=\{ \text{prob measures } Q : \frac{dQ}{P}\in L^p \}$ and $\alpha(Q) = \sum_{X \in A_\rho} \mathbb{E}^Q[-X] = \rho^*(-\frac{dQ}{dP})$ is called the penalty function.
+	
+	
+\end{theorem}
+
+Aside: If $f : X \mapsto \bar{\mathbb{R}}$, then the conjugate function
+\begin{equation}
+	f^* (x^* ) = \sup_{x\in X} \{ x^*(x) - f(x) \}
+\end{equation}
+If $f$ is l.s.c. convex, proper, then
+\begin{equation}
+	f(x) = \sup_{x^*\in X^*} \{ x^*(x) - f^*(x^*) ] = f^{**}(x)
+\end{equation}
+(ie, it is the conjugate of the conjugate.)
+
+We just need to prove that $Q$ and $Q^*$ are the same; these fall out from our original definitions. Start with
+\begin{equation}
+	\rho(0)=0
+\end{equation}
+which implies
+\begin{equation}
+	\inf_{y^*\in L^p} \rho^*(y^*) = 0
+\end{equation}
+which implies that
+\begin{equation}
+	\rho^*(y^*) \geq 0
+\end{equation}
+
+Next, since $\rho$ is monotone, we have
+\begin{equation}
+	\texttt{dom} \rho^* \subseteq L^*
+\end{equation}
+which implies that
+\begin{equation}
+	\rho(x) = \sup_{y^* \in L^*_+} \{ \mathbb{E}[-Xy^*]  - \rho^*(-y^*) \}
+\end{equation}
+
+Finally, from $\rho$ translative, we have that
+\begin{equation}
+	\texttt{dom} \rho^* = \{ y^* \in L^p : \mathbb{E}[y^*] = -1
+\end{equation}
+and 
+\begin{equation}
+	\sup_{x\in A_\rho} \{ \mathbb{E}[x y^*] \leq \infty \}
+\end{equation}
+
+For a l.s.c. coherent risk measure we have that
+\begin{equation}
+	\rho(X) = \sup_{Q\in\mathbb{Q}} E^Q \left[ (something) \right]
+\end{equation}
+
+A few counterexamples:
+\begin{enumerate}
+	\item Variance $\sigma^2(X)$ is not monotone or translative!
+	\item Value at risk $VaR_\alpha(X)$ at level $\alpha\in (0,1)$ is not convex!
+	\begin{equation}
+		VaR_\alpha(X) := \inf \{ x \in \mathbb{R} : P \{ X + x \leq 0 \} \leq \alpha \} = -x^\alpha
+	\end{equation}
+	
+\end{enumerate}
+
+Example: Consider two defaultable corporate bonds with face value \$500,000. Payoff $X_1,X_2$ ($r=10$\%, default prob $0.8$\%, independent). Calculate $VaR_\alpha(X_1)$,$VaR_\alpha(X_2)$, $VaR_\alpha(\frac12 (X_1+ X_2)$ for $\alpha=1$\%.
+
+\begin{equation}
+	X_1 = \begin{cases}
+		50,000 & 99.2\% \\
+		-500,000 & 0.8\%
+	\end{cases}
+\end{equation}
+
+\begin{equation}
+	y = \frac12 (X_1 + X_2) = \begin{cases}
+		50,000 & 98.4\% \\
+		-225,000 & 1.58\\
+		-500,000 & ??0.006??
+	\end{cases}
+\end{equation}
+
+This example also shows VaR is not subadditive!
+
+A better one: Conditional Value at Risk:
+\begin{equation}
+	CVaR_\alpha(X) := -\frac{1}{\alpha} \left( \mathbb{E}[X{\bf 1}_{\{ X \leq x_a \}}] + x_\alpha(\alpha - P\left[ X \leq x_\alpha \right]) \right)
+\end{equation}
+or
+\begin{equation}
+	 = \frac{1}{\alpha} \int_0^\alpha VaR_\gamma (X) d\gamma
+\end{equation}
+Also called Average Value at Risk or Expected shortfall at level $\alpha\in(0,1)$.
+
+Other ones: Expected loss, worst-case risk measure.
+$\rho(X):=E[-X]$,
+$\rho_{\max}$
+
+
+Consider the exponential utility function $u(x)=1-e^{-\alpha x}$ and the set of acceptable positions whenever the expected utility is nonnegative.
+
+\section{Outlook}
+\subsection{Multivariate risks}
+One extension is to now have many random variables instead of just one-- that is, $X \in L_d^p$.
+
+Why would this be important?One application: Important for dealing with many banks which are interlinked and want capital requirements for each bank taking interconnected into account.
+
+Another: Markets with transaction costs--you can't sum over individual stocks because of transaction costs.
+
+For such porfolios, we can look at
+\begin{equation}
+	\mathbb{R}(X) = \{ u\in\mathbb{R}^d : X + u \in A \}
+\end{equation}
+for some acceptance set $A \subset L^p_d$.
+
+A similar approach (of defining these from their properties) can be followed here, with similar result.
+
+\chapter{Cumulant Moments \& Queuing models}
