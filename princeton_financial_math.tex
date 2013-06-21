@@ -37,13 +37,13 @@
 % This is now the recommended way for checking for PDFLaTeX:
 \usepackage{ifpdf}
 
-%\newif\ifpdf
-%\ifx\pdfoutput\undefined
-%\pdffalse % we are not running PDFLaTeX
-%\else
-%\pdfoutput=1 % we are running PDFLaTeX
-%\pdftrue
-%\fi
+% Theorems
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+%\newtheorem{def}{Definition}
+\newtheorem{cor}{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem{invar}{Invariant}
 
 \ifpdf
 \usepackage[pdftex]{graphicx}
@@ -110,7 +110,7 @@
 \part{High Frequency Trading and Limit Order Book}
 \input{princeton_financial_math_hft_lob.tex}
 \part{Guest Lectures}
-
+\input{princeton_financial_math_guest_lectures.tex}
 
 \bibliographystyle{plain}
 \bibliography{}
