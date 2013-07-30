@@ -724,7 +724,42 @@ Next, we could consider the health of a group of banks:
 We could also create networks: Create a link between $i$ and $j$ if there is a certain amount of flow. Now we have a graph by looking at these quantities.
 Then we can start asking questions about the size of the system, path lengths between banks, statistics of the system, etc.
 
+\chapter{Rama Cont}
+Bank balance sheets:
+\begin{enumerate}
+	\item Assets
+	\begin{enumerate}
+	\item Liquid Assets
+	\item Interbank claims
+		\item Other assets
+	\end{enumerate}
+	\item Liabilities
+	\begin{enumerate}
+		\item Deposits
+		\item Interbank liabilities
+		\item Short-term debt
+		\item Capital
+	\end{enumerate}
+\end{enumerate}
 
+Key parts: Solvency vs Liquidity.
+
+\section{Microprudential approach}
+Traditional approach to risk management and bank regulation is to focus on failure/non-failure solvency, liquidity) of individual banks. It focuses on the balance sheet structure of the individual banks.
+
+They assume that losses arise due to exogenous random fluctuations in risk factors.
+The main tool for stabilization of system is the capital requirements.
+But it ignores links or interactions between market participants.
+
+\section{Liability Chain}
+Due to Hellwig. Consider a finite set of banks $i=1..N$, where
+\begin{enumerate}
+	\item $i$ borrows \$100 from $i-1$ over $i$ years
+	\item $i$ lends \$100 to $i+1$ over $i+1$ years
+\end{enumerate}
+
+\chapter{Contagion and systemic risk in financial networks \\ Rama Cont}
+Exposure networks: Let $E_{ij}$ denote exposure of $i$ to $j$.
 
 
 
